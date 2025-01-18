@@ -4,13 +4,27 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import java.io.IOException;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.IOConstants;
+import frc.robot.commands.SwerveDrive;
+import frc.robot.subsystems.Drivetrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,16 +34,39 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  public static final Drivetrain drivetrain = Drivetrain.getInstance();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  //Driver Controls
+  public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    // Configure the trigger bindings
+  private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
+  private final JoystickButton popNote_A = new JoystickButton(driverController, XboxController.Button.kA.value);
+  private final JoystickButton shoot_RB = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+  private final JoystickButton zeroingShooter_X = new JoystickButton(driverController, XboxController.Button.kX.value);
+  private final JoystickButton outtake_B = new JoystickButton(driverController, XboxController.Button.kB.value);
+  private final JoystickButton turnToApril_LB = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+
+  //Operator Controls
+  public static final XboxController opController = new XboxController(IOConstants.OP_CONTROLLER_PORT);
+  
+
+  //Pose Estimation
+
+  //Shuffleboard
+  public static final ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
+  private SendableChooser<Command> autoChooser;
+
+  /** The container for the robot. Contains subsystems, OI devices, and commands. 
+   * @throws IOException */
+  public RobotContainer() throws IOException {
+    registerNamedCommands();
     configureBindings();
+    setDefaultCommands();
+
+      
+    // HttpCamera httpCamera = new HttpCamera("Limelight", "http://10.54.14.11:5800");
+    // CameraServer.addCamera(httpCamera);
+    // driverTab.add(httpCamera).withSize(6, 4).withPosition(4, 0);
   }
 
   /**
@@ -42,13 +79,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    //Driver Buttons
+    resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**
@@ -57,7 +90,24 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    drivetrain.resetAllEncoders();
+    if(drivetrain.isRedAlliance()){
+      drivetrain.setHeading(60);
+    }
+    else{
+      drivetrain.setHeading(-60);
+    }
+    return autoChooser.getSelected();
   }
+
+  public void registerNamedCommands(){
+    NamedCommands.registerCommand("Stop Modules", new InstantCommand(() -> drivetrain.stopModules()));
+    NamedCommands.registerCommand("Reset Heading", new InstantCommand(drivetrain::zeroHeading, drivetrain));
+  }
+
+  public void setDefaultCommands(){
+    drivetrain.setDefaultCommand(new SwerveDrive());
+  }
+
+
 }
