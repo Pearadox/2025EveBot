@@ -49,10 +49,10 @@ public final class Constants {
     public static final int PIGEON_ID = 15;
 
     //Drivetrain characteristics
-    public static final double LEFT_FRONT_OFFSET = 0.307;
-    public static final double RIGHT_FRONT_OFFSET = -0.244;
-    public static final double LEFT_BACK_OFFSET = 0.026;
-    public static final double RIGHT_BACK_OFFSET = 0.144;
+    public static final double LEFT_FRONT_OFFSET = -0.200;
+    public static final double RIGHT_FRONT_OFFSET = -0.458;
+    public static final double LEFT_BACK_OFFSET = 0.;
+    public static final double RIGHT_BACK_OFFSET = 0.;
 
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double DRIVE_MOTOR_GEAR_RATIO = 5.357; //SDS Mk4i L3+ (60:16 first stage)
@@ -99,6 +99,9 @@ public final class Constants {
 
     public static final double kS_PERCENT = 0.035;
     public static final double kP_PERCENT = 0.009;
+
+    //exponent on joystick sensitivity 
+    public static final int EXPONENT = 3;
   }
 
   public static final class IntakeConstants{

@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -15,6 +18,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
 import frc.lib.drivers.PearadoxTalonFX;
@@ -30,6 +36,11 @@ public class SwerveModule extends SubsystemBase {
   private CANcoder absoluteEncoder;
 
   private double absoluteEncoderOffset;
+
+  private StatusSignal<Angle> drivePosition;
+  private StatusSignal<AngularVelocity> driveVelocity;
+  private StatusSignal<Angle> absoluteEncoderAngle;
+  private StatusSignal<Current> driveCurrent;
 
   private Rotation2d lastAngle;
 
@@ -49,6 +60,14 @@ public class SwerveModule extends SubsystemBase {
 
       turnPIDController = new PIDController(SwerveConstants.KP_TURNING, 0, 0);
       turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
+
+      drivePosition = driveMotor.getPosition();
+      driveVelocity = driveMotor.getVelocity();
+      absoluteEncoderAngle = absoluteEncoder.getAbsolutePosition();
+      driveCurrent = driveMotor.getStatorCurrent();
+
+      BaseStatusSignal.setUpdateFrequencyForAll(50, drivePosition, driveVelocity, absoluteEncoderAngle, driveCurrent);
+      driveMotor.optimizeBusUtilization();
 
       resetEncoders();
       lastAngle = getState().angle;

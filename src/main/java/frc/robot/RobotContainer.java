@@ -40,12 +40,7 @@ public class RobotContainer {
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
 
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
-  private final JoystickButton popNote_A = new JoystickButton(driverController, XboxController.Button.kA.value);
-  private final JoystickButton shoot_RB = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-  private final JoystickButton zeroingShooter_X = new JoystickButton(driverController, XboxController.Button.kX.value);
-  private final JoystickButton outtake_B = new JoystickButton(driverController, XboxController.Button.kB.value);
-  private final JoystickButton turnToApril_LB = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-
+  
   //Operator Controls
   public static final XboxController opController = new XboxController(IOConstants.OP_CONTROLLER_PORT);
   
@@ -63,16 +58,12 @@ public class RobotContainer {
     configureBindings();
     setDefaultCommands();
 
-      
-    // HttpCamera httpCamera = new HttpCamera("Limelight", "http://10.54.14.11:5800");
-    // CameraServer.addCamera(httpCamera);
-    // driverTab.add(httpCamera).withSize(6, 4).withPosition(4, 0);
   }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
+   * predicate, or via the named factories in {@link[\]
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
    * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
