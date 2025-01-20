@@ -107,6 +107,9 @@ public final class Constants {
 
   public static final class EndEffectorConstants{
     public static final int END_EFFECTOR_ID = 21;
+
+    public static final double PULL_VOLTAGE = 0.0;
+    
   }
   public static final class FieldConstants{
     public static final double FIELD_LENGTH = 16.54175;
