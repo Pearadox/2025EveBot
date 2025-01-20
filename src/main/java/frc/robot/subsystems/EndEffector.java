@@ -42,16 +42,28 @@ public class EndEffector extends SubsystemBase {
 
   public void collectCoral() {
     if(RobotContainer.driverController.getRightTriggerAxis() >= 0.95){
-      endEffector.set(EndEffectorConstants.PULL_VOLTAGE);
+      coralIn();
     } else if(RobotContainer.driverController.getLeftTriggerAxis() >= 0.95){
-      endEffector.set(-EndEffectorConstants.PULL_VOLTAGE);
+      coralOut();
     } else if(hasCoral()){
-      endEffector.set(0);
+      stopEndEffector();
     } else {
-      endEffector.set(0);
+      stopEndEffector();
     }
   }
-  
+
+  public void coralIn(){
+    endEffector.set(EndEffectorConstants.PULL_VOLTAGE);
+  }
+
+  public void coralOut(){
+    endEffector.set(-EndEffectorConstants.PUSH_VOLTAGE);
+  }
+
+  public void stopEndEffector(){
+    endEffector.set(0);
+  }
+
   public static EndEffector getInstance(){
     return END_EFFECTOR;
   }
