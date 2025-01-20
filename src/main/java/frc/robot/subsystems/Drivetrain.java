@@ -275,4 +275,19 @@ public class Drivetrain extends SubsystemBase {
       .andThen(new WaitCommand(0.5))
       .andThen(new InstantCommand(() -> RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 0)));
   }
+
+  public void setAllIdleMode(boolean brake){
+    if(brake){
+      leftFront.setBrake(true);
+      rightFront.setBrake(true);
+      leftBack.setBrake(true);
+      rightBack.setBrake(true);
+    }
+    else{
+      leftFront.setBrake(false);
+      rightFront.setBrake(false);
+      leftBack.setBrake(false);
+      rightBack.setBrake(false);
+    }
+  }
 }
