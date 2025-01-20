@@ -49,6 +49,7 @@ public final class Constants {
     public static final int PIGEON_ID = 15;
 
     //Drivetrain characteristics
+    //TODO: offsets
     public static final double LEFT_FRONT_OFFSET = -0.200;
     public static final double RIGHT_FRONT_OFFSET = -0.458;
     public static final double LEFT_BACK_OFFSET = 0.;
@@ -104,63 +105,9 @@ public final class Constants {
     public static final int EXPONENT = 3;
   }
 
-  public static final class IntakeConstants{
-    public static final int UTB_ROLLER_ID = 21;
+  public static final class EndEffectorConstants{
+    public static final int END_EFFECTOR_ID = 21;
   }
-
-  public static final class ShooterConstants{
-    public static final int LEFT_SHOOTER_ID = 31;
-    public static final int RIGHT_SHOOTER_ID = 32;
-    public static final int PIVOT_ID = 33;
-
-    public static final double LEFT_SHOOTER_kP = 0.3;
-    public static final double LEFT_SHOOTER_kI = 0;
-    public static final double LEFT_SHOOTER_kD = 0;
-
-    public static final double RIGHT_SHOOTER_kP = 0.3;
-    public static final double RIGHT_SHOOTER_kI = 0;
-    public static final double RIGHT_SHOOTER_kD = 0;
-
-    public static final double SHOOTER_MIN_OUTPUT = -1.0;
-    public static final double SHOOTER_MAX_OUTPUT = 1.0;
-
-    //TODO Tune Pivot to Not Oscillate
-    public static final double PIVOT_kP = 0.07;
-    public static final double PIVOT_kI = 0.00008;
-    public static final double PIVOT_kD = 0;
-
-    public static final double PIVOT_MIN_OUTPUT = -0.85;
-    public static final double PIVOT_MAX_OUTPUT = 0.85;
-
-    public static final double AMP_PIVOT_POSITION = 13.8;
-    public static final double PASSING_PIVOT_POSITION = 15.5;
-    public static final double SPEAKER_PIVOT_POSITION = 19.7;
-
-    public static final double FLOOR_TO_SHOOTER = Units.inchesToMeters(7);
-  }
-
-  public static final class TransportConstants{
-    public static final int TOP_TRANSPORT_ID = 34;
-    public static final int BOT_TRANSPORT_ID = 35;
-
-    public static final int IR_SENSOR_CHANNEL = 9;
-  }
-
-  public static final class AmpBarConstants{
-    public static final int AMP_BAR_ID = 41;
-
-    public static final double AMP_BAR_kP = 0.25;
-    public static final double AMP_BAR_kI = 0;
-    public static final double AMP_BAR_kD = 0;
-
-    public static final double AMP_BAR_MIN_OUTPUT = -0.5;
-    public static final double AMP_BAR_MAX_OUTPUT = 0.5;
-
-    // Zero at Top of Shooter at Lowest Pivot
-    public static final double STOWED_ROT = 3.0;
-    public static final double DEPLOYED_ROT = 22.0;
-  }
-
   public static final class FieldConstants{
     public static final double FIELD_LENGTH = 16.54175;
     public static final double FIELD_WIDTH = 8.21055;

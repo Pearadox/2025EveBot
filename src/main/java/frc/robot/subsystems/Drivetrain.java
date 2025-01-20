@@ -180,8 +180,21 @@ public class Drivetrain extends SubsystemBase {
     setModuleStates(moduleStates);
   }
 
+  public void setAllIdleMode(boolean brake){
+    if(brake){
+      leftFront.setBrake(true);
+      rightFront.setBrake(true);
+      leftBack.setBrake(true);
+      rightBack.setBrake(true);
+    }
+    else{
+      leftFront.setBrake(false);
+      rightFront.setBrake(false);
+      leftBack.setBrake(false);
+      rightBack.setBrake(false);
+    }
+  }
   
-
   public void resetAllEncoders(){
     leftFront.resetEncoders();
     rightFront.resetEncoders();
