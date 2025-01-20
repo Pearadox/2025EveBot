@@ -67,8 +67,8 @@ public class Drivetrain extends SubsystemBase {
     leftFront = new SwerveModule(
       SwerveConstants.LEFT_FRONT_DRIVE_ID, 
       SwerveConstants.LEFT_FRONT_TURN_ID, 
-      true, 
-      true, 
+      false, 
+      false, 
       SwerveConstants.LEFT_FRONT_CANCODER_ID, 
       SwerveConstants.LEFT_FRONT_OFFSET);
 
@@ -84,15 +84,15 @@ public class Drivetrain extends SubsystemBase {
       SwerveConstants.LEFT_BACK_DRIVE_ID, 
       SwerveConstants.LEFT_BACK_TURN_ID, 
       false, 
-      true, 
+      false, 
       SwerveConstants.LEFT_BACK_CANCODER_ID, 
       SwerveConstants.LEFT_BACK_OFFSET);
     
     rightBack = new SwerveModule(
       SwerveConstants.RIGHT_BACK_DRIVE_ID, 
       SwerveConstants.RIGHT_BACK_TURN_ID, 
-      true, 
-      true, 
+      false, 
+      false, 
       SwerveConstants.RIGHT_BACK_CANCODER_ID, 
       SwerveConstants.RIGHT_BACK_OFFSET);
 
@@ -144,16 +144,16 @@ public class Drivetrain extends SubsystemBase {
   public void swerveDrive(double frontSpeed, double sideSpeed, double turnSpeed, 
     boolean fieldOriented, Translation2d centerOfRotation, boolean deadband, int exponent){ //Drive with rotational speed control w/ joystick
 
-    frontSpeed = Math.pow(frontSpeed, exponent) * exponent % 2 == 0 ? Math.signum(frontSpeed): 1;
-    sideSpeed = Math.pow(sideSpeed, exponent) * exponent % 2 == 0 ? Math.signum(sideSpeed): 1;
-    turnSpeed = Math.pow(turnSpeed, exponent) * exponent % 2 == 0 ? Math.signum(turnSpeed): 1;
-
-
     if(deadband){
       frontSpeed = Math.abs(frontSpeed) > 0.15 ? frontSpeed : 0;
       sideSpeed = Math.abs(sideSpeed) > 0.15 ? sideSpeed : 0;
       turnSpeed = Math.abs(turnSpeed) > 0.15 ? turnSpeed : 0;
     }
+
+    
+    frontSpeed = Math.pow(frontSpeed, exponent) * exponent % 2 == 0 ? Math.signum(frontSpeed): 1;
+    sideSpeed = Math.pow(sideSpeed, exponent) * exponent % 2 == 0 ? Math.signum(sideSpeed): 1;
+    turnSpeed = Math.pow(turnSpeed, exponent) * exponent % 2 == 0 ? Math.signum(turnSpeed): 1;
 
     frontSpeed = frontLimiter.calculate(frontSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
     sideSpeed = sideLimiter.calculate(sideSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
@@ -180,8 +180,21 @@ public class Drivetrain extends SubsystemBase {
     setModuleStates(moduleStates);
   }
 
+  public void setAllIdleMode(boolean brake){
+    if(brake){
+      leftFront.setBrake(true);
+      rightFront.setBrake(true);
+      leftBack.setBrake(true);
+      rightBack.setBrake(true);
+    }
+    else{
+      leftFront.setBrake(false);
+      rightFront.setBrake(false);
+      leftBack.setBrake(false);
+      rightBack.setBrake(false);
+    }
+  }
   
-
   public void resetAllEncoders(){
     leftFront.resetEncoders();
     rightFront.resetEncoders();
