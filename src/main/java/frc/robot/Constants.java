@@ -104,21 +104,26 @@ public final class Constants {
     public static final int EXPONENT = 3;
   }
 
-  public static final class groundCoralIntakeConstants {
-    // CANIDs for pivot and roller
-    public static final int PIVOT_ID = 31;
-    public static final int ROLLER_ID = 32;
-
+  public static final class GroundIntakeConstants {
+    // CANID for pivot
+    public static final int PIVOT_ID = 31; // placeholder CANID
+    
     // PID for pivot
     public static final double PIVOT_kP = 0.25;
     public static final double PIVOT_kI = 0.0;
     public static final double PIVOT_kD = 0.0;
-
+    
     public static final double PIVOT_MIN_OUTPUT = -0.5;
     public static final double PIVOT_MAX_OUTPUT = 0.5;
+    
+    public static final double PIVOT_STOWED_ROT =  0.0; // TODO: find stowed rot in motor rotations - potentially zero at stowed rot
+    public static final double PIVOT_DEPLOYED_ROT = 0.0; // TODO: find deployed rot in motor rotations
 
-    public static final double PIVOT_STOWED_ROT =  0.0; // find stowed rot in motor rotations - potentially zero at stowed rot
-    public static final double PIVOT_DEPLOYED_ROT = 0.0; // find deployed rot in motor rotations
+    // CANID for roller
+    public static final int ROLLER_ID = 32;
+
+    // beam-break/IR sensor
+    public static final int IR_SENSOR_CHANNEL = 0; // TODO: find the channel for the IR sensor
   }
 
   public static final class FieldConstants{
