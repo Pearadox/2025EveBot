@@ -14,20 +14,23 @@ import frc.robot.RobotContainer;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class EndEffector extends SubsystemBase {
 
   private static final EndEffector END_EFFECTOR = new EndEffector();
 
+  public static EndEffector getInstance(){
+    return END_EFFECTOR;
+  }
+
   private PearadoxSparkMax endEffector;
   private DigitalInput endSensor;
   private Debouncer debouncer;
 
-  private boolean hasCoral = false;
   private boolean rumbled = false;
   private boolean isExtended = false; //TODO: integrate with arm
 
-  /** Creates a new EndEffector. */
   public EndEffector() {
     endEffector = new PearadoxSparkMax(EndEffectorConstants.END_EFFECTOR_ID, MotorType.kBrushless, IdleMode.kBrake, 50, false);
     endSensor = new DigitalInput(EndEffectorConstants.END_SENSOR_CHANNEL);
@@ -36,8 +39,9 @@ public class EndEffector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     collectCoral();
+
+    SmartDashboard.putBoolean("End Sensor", hasCoral());
   }
 
   public void collectCoral() {
@@ -47,7 +51,7 @@ public class EndEffector extends SubsystemBase {
       coralOut();
     } else if(hasCoral()){
       stopEndEffector();
-    } else {
+    } else{
       stopEndEffector();
     }
   }
@@ -61,11 +65,7 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void stopEndEffector(){
-    endEffector.set(0);
-  }
-
-  public static EndEffector getInstance(){
-    return END_EFFECTOR;
+    endEffector.set(0.0);
   }
 
   public boolean hasCoral(){
