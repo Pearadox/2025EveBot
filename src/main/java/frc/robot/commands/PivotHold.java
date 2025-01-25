@@ -11,12 +11,12 @@ import frc.robot.subsystems.GroundIntake.ArmPivotPos;
 import frc.robot.RobotContainer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class GroundIntakeHold extends Command {
+public class PivotHold extends Command {
   /** Creates a new groundIntakeHold. */
 
   GroundIntake groundIntake = GroundIntake.getInstance();
 
-  public GroundIntakeHold() {
+  public PivotHold() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(groundIntake);
   }

@@ -27,7 +27,7 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Drivetrain;
 
-import frc.robot.commands.GroundIntakeHold;
+import frc.robot.commands.PivotHold;
 import frc.robot.subsystems.GroundIntake;
 
 /**
@@ -102,6 +102,7 @@ public class RobotContainer {
 
   public void setDefaultCommands(){
     drivetrain.setDefaultCommand(new SwerveDrive());
+    drivetrain.setDefaultCommand(new PivotHold());
   }
 
 

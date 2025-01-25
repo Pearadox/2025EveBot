@@ -116,8 +116,9 @@ public final class Constants {
     public static final double PIVOT_MIN_OUTPUT = -0.5;
     public static final double PIVOT_MAX_OUTPUT = 0.5;
     
-    public static final double PIVOT_STOWED_ROT =  0.0; // TODO: find stowed rot in motor rotations - potentially zero at stowed rot
-    public static final double PIVOT_DEPLOYED_ROT = 0.0; // TODO: find deployed rot in motor rotations
+    public static final double PIVOT_STOWED_ROT =  0.0; // TODO: find stowed rot in motor rotations - 61* from horizontal in the prototype CAD
+    public static final double PIVOT_DEPLOYED_ROT = 0.0; // TODO: find deployed rot in motor rotations - -30* from horizontal in the prototype CAD
+    // TODO: determine where to 0 the pivot in the prototype CAD
 
     // CANID for roller
     public static final int ROLLER_ID = 32;
