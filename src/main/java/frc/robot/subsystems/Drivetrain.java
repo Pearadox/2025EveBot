@@ -155,13 +155,13 @@ public class Drivetrain extends SubsystemBase {
       turnSpeed = Math.abs(turnSpeed) > 0.15 ? turnSpeed : 0;
     }
 
+    frontSpeed = Math.pow(frontSpeed, exponent) * (exponent % 2 == 0 ? Math.signum(frontSpeed): 1);
+    sideSpeed = Math.pow(sideSpeed, exponent) * (exponent % 2 == 0 ? Math.signum(sideSpeed): 1);
+    turnSpeed = Math.pow(turnSpeed, exponent) * (exponent % 2 == 0 ? Math.signum(turnSpeed): 1);
+
     frontSpeed = frontLimiter.calculate(frontSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
     sideSpeed = sideLimiter.calculate(sideSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
     turnSpeed = turnLimiter.calculate(turnSpeed) * SwerveConstants.TELE_DRIVE_MAX_ANGULAR_SPEED;
-
-    frontSpeed = Math.pow(frontSpeed, exponent) * exponent % 2 == 0 ? Math.signum(frontSpeed): 1;
-    sideSpeed = Math.pow(sideSpeed, exponent) * exponent % 2 == 0 ? Math.signum(sideSpeed): 1;
-    turnSpeed = Math.pow(turnSpeed, exponent) * exponent % 2 == 0 ? Math.signum(turnSpeed): 1;
 
     ChassisSpeeds chassisSpeeds;
     if(fieldOriented){
