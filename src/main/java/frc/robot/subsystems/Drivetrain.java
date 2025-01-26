@@ -67,7 +67,7 @@ public class Drivetrain extends SubsystemBase {
     leftFront = new SwerveModule(
       SwerveConstants.LEFT_FRONT_DRIVE_ID, 
       SwerveConstants.LEFT_FRONT_TURN_ID, 
-      true, 
+      false, 
       true, 
       SwerveConstants.LEFT_FRONT_CANCODER_ID, 
       SwerveConstants.LEFT_FRONT_OFFSET);
@@ -76,7 +76,7 @@ public class Drivetrain extends SubsystemBase {
       SwerveConstants.RIGHT_FRONT_DRIVE_ID, 
       SwerveConstants.RIGHT_FRONT_TURN_ID, 
       false, 
-      false, 
+      true, 
       SwerveConstants.RIGHT_FRONT_CANCODER_ID, 
       SwerveConstants.RIGHT_FRONT_OFFSET);
 
@@ -91,7 +91,7 @@ public class Drivetrain extends SubsystemBase {
     rightBack = new SwerveModule(
       SwerveConstants.RIGHT_BACK_DRIVE_ID, 
       SwerveConstants.RIGHT_BACK_TURN_ID, 
-      true, 
+      false, 
       true, 
       SwerveConstants.RIGHT_BACK_CANCODER_ID, 
       SwerveConstants.RIGHT_BACK_OFFSET);
@@ -144,9 +144,9 @@ public class Drivetrain extends SubsystemBase {
   public void swerveDrive(double frontSpeed, double sideSpeed, double turnSpeed, 
     boolean fieldOriented, Translation2d centerOfRotation, boolean deadband, int exponent){ //Drive with rotational speed control w/ joystick
 
-    frontSpeed = Math.pow(frontSpeed, exponent) * exponent % 2 == 0 ? Math.signum(frontSpeed): 1;
-    sideSpeed = Math.pow(sideSpeed, exponent) * exponent % 2 == 0 ? Math.signum(sideSpeed): 1;
-    turnSpeed = Math.pow(turnSpeed, exponent) * exponent % 2 == 0 ? Math.signum(turnSpeed): 1;
+    // frontSpeed = Math.pow(frontSpeed, exponent) * exponent % 2 == 0 ? Math.signum(frontSpeed): 1;
+    // sideSpeed = Math.pow(sideSpeed, exponent) * exponent % 2 == 0 ? Math.signum(sideSpeed): 1;
+    // turnSpeed = Math.pow(turnSpeed, exponent) * exponent % 2 == 0 ? Math.signum(turnSpeed): 1;
 
 
     if(deadband){
