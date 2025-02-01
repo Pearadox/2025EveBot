@@ -28,7 +28,9 @@ import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Drivetrain;
 
 import frc.robot.commands.PivotHold;
-import frc.robot.subsystems.GroundIntake;
+import frc.robot.commands.PivotSimHold;
+import frc.robot.subsystems.groundintake.GroundIntake;
+import frc.robot.subsystems.groundintake.GroundIntakeSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -39,6 +41,9 @@ import frc.robot.subsystems.GroundIntake;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public static final Drivetrain drivetrain = Drivetrain.getInstance();
+
+  public static final GroundIntake groundIntake = GroundIntake.getInstance();
+  public static final GroundIntakeSim simIntake = GroundIntakeSim.getInstance();
 
   //Driver Controls
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
@@ -102,7 +107,9 @@ public class RobotContainer {
 
   public void setDefaultCommands(){
     drivetrain.setDefaultCommand(new SwerveDrive());
-    drivetrain.setDefaultCommand(new PivotHold());
+    groundIntake.setDefaultCommand(new PivotHold());
+    simIntake.setDefaultCommand(new PivotSimHold());
+    
   }
 
 

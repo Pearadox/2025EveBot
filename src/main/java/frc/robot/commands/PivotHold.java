@@ -5,10 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-
-import frc.robot.subsystems.GroundIntake;
-import frc.robot.subsystems.GroundIntake.ArmPivotPos;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.groundintake.GroundIntake;
+import frc.robot.subsystems.groundintake.GroundIntake.ArmPivotPos;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PivotHold extends Command {

@@ -164,4 +164,14 @@ public final class Constants {
       public static final double AMBIGUITY_FILTER = 0.3;
       public static final double DISTANCE_FILTER = FieldConstants.FIELD_LENGTH / 2;
   }
+
+  public static final class SimulationConstants{
+    public static final double armLength = 0.0;
+    public static final double armMass = 0.0; // TODO: ask Liam for arm details in the CAD
+
+    public static final double stowedDeg = 90.0;
+    public static final double shootingDeg = 118.0;
+    public static final double deployedDeg = 210.0; // TODO: correct after first sim maybe
+
+  }
 }
