@@ -166,8 +166,8 @@ public final class Constants {
   }
 
   public static final class SimulationConstants{
-    public static final double armLength = 0.0;
-    public static final double armMass = 0.0; // TODO: ask Liam for arm details in the CAD
+    public static final double armLength = Units.inchesToMeters(15);
+    public static final double armMass = Units.lbsToKilograms(7); // TODO: ask Liam for arm details in the CAD
 
     public static final double stowedDeg = 90.0;
     public static final double shootingDeg = 118.0;

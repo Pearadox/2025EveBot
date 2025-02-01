@@ -38,17 +38,17 @@ public class PivotHold extends Command {
     }
 
     // outtakes rollers if op controller left bumper pressed, else intakes/outtakes based on stowed/deployed
-    if (!RobotContainer.opController.getLeftBumperButton()) {
-      if (groundIntake.getPivotPos() == ArmPivotPos.stowed) {
-        groundIntake.rollerStop();
-      }
-      else {
-        groundIntake.rollerIntake();
-      }
-    }
-    else {
-      groundIntake.rollerOuttake();
-    }
+  //   if (!RobotContainer.opController.getLeftBumperButton()) {
+  //     if (groundIntake.getPivotPos() == ArmPivotPos.stowed) {
+  //       groundIntake.rollerStop();
+  //     }
+  //     else {
+  //       groundIntake.rollerIntake();
+  //     }
+  //   }
+  //   else {
+  //     groundIntake.rollerOuttake();
+  //   }
   }
 
   // Called once the command ends or is interrupted.

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -51,7 +52,7 @@ public class RobotContainer {
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
   
   //Operator Controls
-  public static final XboxController opController = new XboxController(IOConstants.OP_CONTROLLER_PORT);
+  public static final CommandXboxController opController = new CommandXboxController(IOConstants.OP_CONTROLLER_PORT);
   
 
   //Pose Estimation
@@ -64,7 +65,7 @@ public class RobotContainer {
    * @throws IOException */
   public RobotContainer() throws IOException {
     registerNamedCommands();
-    configureBindings();
+    configureButtonBindings();
     setDefaultCommands();
 
   }
@@ -78,9 +79,11 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
+  private void configureButtonBindings() {
     //Driver Buttons
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+
+    opController.b().onTrue(Commands.runOnce(() -> simIntake.setDeployed(), simIntake));
 
   }
 

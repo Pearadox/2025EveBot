@@ -34,22 +34,20 @@ public class GroundIntakeSim extends SubsystemBase {
           12,
           SingleJointedArmSim.estimateMOI(SimulationConstants.armLength, SimulationConstants.armMass),
           SimulationConstants.armLength,
-          Units.degreesToRadians(90),
-          Units.degreesToRadians(210),
+          Units.degreesToRadians(-180), //90
+          Units.degreesToRadians(180), //210
           false,
-          Units.degreesToRadians(SimulationConstants.stowedDeg),
-          null
-          );
+          Units.degreesToRadians(-90));
 
-  private final Mechanism2d mech2d = new Mechanism2d(50, 50); // TODO: find width and height
-  private final MechanismRoot2d intakePivot = mech2d.getRoot("intakePivot", 25.0, 25.0);
+  private final Mechanism2d mech2d = new Mechanism2d(5, 5); // TODO: find width and height
+  private final MechanismRoot2d intakePivot = mech2d.getRoot("intakePivot", 1.5, 2.5);
   private final MechanismLigament2d intake = intakePivot.append(
     new MechanismLigament2d("intake", SimulationConstants.armLength, SimulationConstants.stowedDeg, 3, new Color8Bit(Color.kGold)));
 
-  public static final GroundIntakeSim GROUND_INTAKE_SIM = new GroundIntakeSim();
+  public static final GroundIntakeSim simIntake = new GroundIntakeSim();
 
   public static GroundIntakeSim getInstance(){
-    return GROUND_INTAKE_SIM;
+    return simIntake;
   }
 
   public enum SimPivotMode {
@@ -66,7 +64,7 @@ public class GroundIntakeSim extends SubsystemBase {
   }
   
   @Override
-  public void periodic() {
+  public void simulationPeriodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putData("Intake Sim", mech2d);
 
