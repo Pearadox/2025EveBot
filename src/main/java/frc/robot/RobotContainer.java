@@ -23,7 +23,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.IOConstants;
+import frc.robot.commands.ClimberDown;
+import frc.robot.commands.ClimberUp;
 import frc.robot.commands.SwerveDrive;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 
 /**
@@ -35,11 +38,14 @@ import frc.robot.subsystems.Drivetrain;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public static final Drivetrain drivetrain = Drivetrain.getInstance();
+  public static final Climber climber = Climber.getInstance();
 
   //Driver Controls
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
 
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
+  private final JoystickButton climber_up = new JoystickButton(driverController, XboxController.Button.kY.value);
+  private final JoystickButton climber_down = new JoystickButton(driverController, XboxController.Button.kA.value);
   
   //Operator Controls
   public static final XboxController opController = new XboxController(IOConstants.OP_CONTROLLER_PORT);
@@ -72,6 +78,8 @@ public class RobotContainer {
   private void configureBindings() {
     //Driver Buttons
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+    climber_up.whileTrue(new ClimberUp());
+    climber_down.whileTrue(new ClimberDown());
 
   }
 
