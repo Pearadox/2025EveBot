@@ -21,10 +21,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.commands.ElevatorHold;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevator;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -36,10 +40,22 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public static final Drivetrain drivetrain = Drivetrain.getInstance();
 
+  public static final Elevator elevator = Elevator.getInstance();
+
+
   //Driver Controls
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
 
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
+  private final JoystickButton elevatorUp = new JoystickButton(driverController, XboxController.Button.kY.value);
+  private final JoystickButton elevatorDown = new JoystickButton(driverController, XboxController.Button.kA.value);
+
+  private final JoystickButton elevatorStowed = new JoystickButton(opController, XboxController.Button.kX.value);
+  private final JoystickButton elevatorLevelTwo = new JoystickButton(opController, XboxController.Button.kY.value);
+  private final JoystickButton elevatorLevelThree = new JoystickButton(opController, XboxController.Button.kB.value);
+  private final JoystickButton elevatorLevelFour = new JoystickButton(opController, XboxController.Button.kA.value);
+
+
   
   //Operator Controls
   public static final XboxController opController = new XboxController(IOConstants.OP_CONTROLLER_PORT);
@@ -57,7 +73,6 @@ public class RobotContainer {
     registerNamedCommands();
     configureBindings();
     setDefaultCommands();
-
   }
 
   /**
@@ -73,6 +88,13 @@ public class RobotContainer {
     //Driver Buttons
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
+    elevatorUp.whileTrue(new RunCommand(() -> elevator.changeElevatorOffset(ElevatorConstants.ELEVATOR_OFFSET)));
+    elevatorDown.whileTrue(new RunCommand(() -> elevator.changeElevatorOffset(-ElevatorConstants.ELEVATOR_OFFSET)));
+    elevatorStowed.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode()));
+    elevatorLevelTwo.onTrue(new InstantCommand(() -> elevator.setElevatorLevelTwoMode()));
+    elevatorLevelThree.onTrue(new InstantCommand(() -> elevator.setElevatorLevelThreeMode()));
+    elevatorLevelFour.onTrue(new InstantCommand(() -> elevator.setElevatorLevelFourMode()));
+
   }
 
   /**
@@ -81,13 +103,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    drivetrain.resetAllEncoders();
-    if(drivetrain.isRedAlliance()){
-      drivetrain.setHeading(60);
-    }
-    else{
-      drivetrain.setHeading(-60);
-    }
     return autoChooser.getSelected();
   }
 
@@ -98,6 +113,7 @@ public class RobotContainer {
 
   public void setDefaultCommands(){
     drivetrain.setDefaultCommand(new SwerveDrive());
+    elevator.setDefaultCommand(new ElevatorHold());
   }
 
 

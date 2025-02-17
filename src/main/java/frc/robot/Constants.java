@@ -5,6 +5,9 @@
 package frc.robot;
 
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -104,62 +107,6 @@ public final class Constants {
     public static final int EXPONENT = 3;
   }
 
-  public static final class IntakeConstants{
-    public static final int UTB_ROLLER_ID = 21;
-  }
-
-  public static final class ShooterConstants{
-    public static final int LEFT_SHOOTER_ID = 31;
-    public static final int RIGHT_SHOOTER_ID = 32;
-    public static final int PIVOT_ID = 33;
-
-    public static final double LEFT_SHOOTER_kP = 0.3;
-    public static final double LEFT_SHOOTER_kI = 0;
-    public static final double LEFT_SHOOTER_kD = 0;
-
-    public static final double RIGHT_SHOOTER_kP = 0.3;
-    public static final double RIGHT_SHOOTER_kI = 0;
-    public static final double RIGHT_SHOOTER_kD = 0;
-
-    public static final double SHOOTER_MIN_OUTPUT = -1.0;
-    public static final double SHOOTER_MAX_OUTPUT = 1.0;
-
-    //TODO Tune Pivot to Not Oscillate
-    public static final double PIVOT_kP = 0.07;
-    public static final double PIVOT_kI = 0.00008;
-    public static final double PIVOT_kD = 0;
-
-    public static final double PIVOT_MIN_OUTPUT = -0.85;
-    public static final double PIVOT_MAX_OUTPUT = 0.85;
-
-    public static final double AMP_PIVOT_POSITION = 13.8;
-    public static final double PASSING_PIVOT_POSITION = 15.5;
-    public static final double SPEAKER_PIVOT_POSITION = 19.7;
-
-    public static final double FLOOR_TO_SHOOTER = Units.inchesToMeters(7);
-  }
-
-  public static final class TransportConstants{
-    public static final int TOP_TRANSPORT_ID = 34;
-    public static final int BOT_TRANSPORT_ID = 35;
-
-    public static final int IR_SENSOR_CHANNEL = 9;
-  }
-
-  public static final class AmpBarConstants{
-    public static final int AMP_BAR_ID = 41;
-
-    public static final double AMP_BAR_kP = 0.25;
-    public static final double AMP_BAR_kI = 0;
-    public static final double AMP_BAR_kD = 0;
-
-    public static final double AMP_BAR_MIN_OUTPUT = -0.5;
-    public static final double AMP_BAR_MAX_OUTPUT = 0.5;
-
-    // Zero at Top of Shooter at Lowest Pivot
-    public static final double STOWED_ROT = 3.0;
-    public static final double DEPLOYED_ROT = 22.0;
-  }
 
   public static final class FieldConstants{
     public static final double FIELD_LENGTH = 16.54175;
@@ -197,5 +144,54 @@ public final class Constants {
       
       public static final double AMBIGUITY_FILTER = 0.3;
       public static final double DISTANCE_FILTER = FieldConstants.FIELD_LENGTH / 2;
+  }
+
+  public static final class ElevatorConstants {
+
+    public static final int ELEVATOR_ID = -1; //TODO
+    public static final int ELEVATOR_FOLLOWER_ID = -1; //TODO
+    public static final NeutralModeValue MODE  = NeutralModeValue.Brake;
+    public static final int CURRENT_LIMIT = 60; //TODO
+    public static final boolean IS_INVERTED = false;
+
+    public static final int UPDATE_FREQ = 50;
+
+    public static final double MAX_VELOCITY_MPS = 2.0; //TODO
+    public static final double MAX_ACCELERATION_MPS2 = 8.0; //TODO
+    public static final double MM_CRUISE_VELCOCITY = 20; //TODO
+    public static final double MM_ACCELERATION = 20; //TODO
+
+    public static final double TICKS_PER_REV = 4000; //TODO
+    public static final double GEAR_RATIO = 3; //TODO
+    public static final double SPROCKET_PITCH_DIAMETER = 2.0; //TODO should be chain pitch * number of teeth / pi
+    public static final double kRotationToInches = SPROCKET_PITCH_DIAMETER * Math.PI / GEAR_RATIO;
+
+    //the following are in inches
+    public static final double STOWED_HEIGHT = 0;
+    public static final double LEVEL_TWO_HEIGHT = 0; //TODO
+    public static final double LEVEL_THREE_HEIGHT = 0; //TODO
+    public static final double LEVEL_FOUR_HEIGHT = 0; //TODO
+    public static final double MAX_ELEVATOR_HEIGHT = 0; //TODO
+
+    public static final double LEVEL_TWO_ROT = LEVEL_TWO_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
+    public static final double LEVEL_THREE_ROT = LEVEL_THREE_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
+    public static final double LEVEL_FOUR_ROT = LEVEL_FOUR_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
+    public static final double MAX_ELEVATOR_ROT = MAX_ELEVATOR_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
+    public static final double STOWED_ROT = STOWED_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
+
+    public static final double ELEVATOR_OFFSET = 0.01;
+
+    //TODO: change all of these values to match true elevator gains
+    public static final double kG = 0.0;
+    public static final double kS = 0.0;
+    public static final double kV = 0.0;
+    public static final double kA = 0.0;
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    
+    
+
+    
   }
 }
