@@ -187,9 +187,30 @@ public final class Constants {
     public static final double kP = 0.15;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-    
-    
+  }
 
-    
+  public static final class ArmConstants {
+    //TODO: Update all constants for arm    
+    public static final int ARM_KRAKEN_ID = 22;
+    public static final int CURRENT_LIMIT = 40;
+
+    public static final double ARM_GEAR_RATIO = 3; // TODO
+
+    public static final double ARM_LEVEL_4_ROT = Units.degreesToRotations(50);
+    public static final double ARM_LEVEL_3_ROT = Units.degreesToRotations(-45);
+    public static final double ARM_LEVEL_2_ROT = Units.degreesToRotations(-45);
+    public static final double ARM_INTAKE_ROT = Units.degreesToRotations(-160);    
+    public static final double ARM_STOWED_ROT = Units.degreesToRotations(-90);
+
+    public static final double UPDATE_FREQ = 50;
+
+    // TODO: tune pid
+    public static final double kG = 0.0;
+    public static final double kS = 0.0;
+    public static final double kV = 0.1;
+    public static final double kA = 0.0;
+    public static final double kP = 0.15;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
   }
 }

@@ -4,14 +4,15 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
@@ -60,36 +61,46 @@ public class Elevator extends SubsystemBase {
 
     elevator.getConfigurator().apply(talonFXConfigs);
 
-    elevator.getPosition().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
-    elevator.getVelocity().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
+    // elevator.getPosition().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
+    // elevator.getVelocity().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
 
-    // These are needed for the follower motor to work
-    elevator.getDutyCycle().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
-    elevator.getMotorVoltage().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
-    elevator.getTorqueCurrent().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
-    elevator.getSupplyCurrent().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
+    // // These are needed for the follower motor to work
+    // elevator.getDutyCycle().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
+    // elevator.getMotorVoltage().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
+    // elevator.getTorqueCurrent().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
+    // elevator.getSupplyCurrent().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
+    // elevator.getStatorCurrent().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
+
+    BaseStatusSignal.setUpdateFrequencyForAll(ArmConstants.UPDATE_FREQ, 
+        elevator.getPosition(), 
+        elevator.getVelocity(),
+        elevator.getDutyCycle(),
+        elevator.getMotorVoltage(),
+        elevator.getTorqueCurrent(),
+        elevator.getSupplyCurrent(),
+        elevator.getStatorCurrent()
+    );
+
     elevator.optimizeBusUtilization();
 
     elevatorFollower.getConfigurator().apply(talonFXConfigs);
     elevatorFollower.optimizeBusUtilization();
     elevatorFollower.setControl(new Follower(ElevatorConstants.ELEVATOR_ID, true));
-
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Elevator Position Inches", getElevatorPositionInches());
-    SmartDashboard.putNumber("Elevator Velocity (in/sec)", getElevatorVelocity_InchesPerSecond());
-    SmartDashboard.putNumber("Elevator Position Rots", getElevatorPositionRots());
-    SmartDashboard.putNumber("Elevator Velocity (rot/sec)", getElevatorVelocity_RotsPerSecond());
-    SmartDashboard.putNumber("Elevator Current A", elevator.getSupplyCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Elevator Voltage V", elevator.getMotorVoltage().getValueAsDouble());
-    SmartDashboard.putNumber("Offset", elevatorOffset);
-
+    SmartDashboard.putNumber("Elevator/Position Inches", getElevatorPositionInches());
+    SmartDashboard.putNumber("Elevator/Velocity (in/sec)", getElevatorVelocity_InchesPerSecond());
+    SmartDashboard.putNumber("Elevator/Position Rots", getElevatorPositionRots());
+    SmartDashboard.putNumber("Elevator/Velocity (rot/sec)", getElevatorVelocity_RotsPerSecond());
+    SmartDashboard.putNumber("Elevator/Supply Current A", elevator.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/Stator Current A", elevator.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/Voltage V", elevator.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/Offset", elevatorOffset);
   }
 
   public void setElevatorPosition() {
-
     if(elevatorMode == ElevatorMode.STOWED) {
       elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.STOWED_ROT + elevatorOffset));
     }
@@ -102,7 +113,6 @@ public class Elevator extends SubsystemBase {
     else if(elevatorMode == ElevatorMode.LEVEL_FOUR) {
       elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.LEVEL_FOUR_ROT + elevatorOffset));
     }
-
   }
 
   public double getElevatorPositionRots() {
