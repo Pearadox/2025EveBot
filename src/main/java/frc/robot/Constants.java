@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.VecBuilder;
@@ -148,8 +146,8 @@ public final class Constants {
 
   public static final class ElevatorConstants {
 
-    public static final int ELEVATOR_ID = -1; //TODO
-    public static final int ELEVATOR_FOLLOWER_ID = -1; //TODO
+    public static final int ELEVATOR_ID = 21;
+    public static final int ELEVATOR_FOLLOWER_ID = 20;
     public static final NeutralModeValue MODE  = NeutralModeValue.Brake;
     public static final int CURRENT_LIMIT = 60; //TODO
     public static final boolean IS_INVERTED = false;
@@ -167,11 +165,11 @@ public final class Constants {
     public static final double kRotationToInches = SPROCKET_PITCH_DIAMETER * Math.PI / GEAR_RATIO;
 
     //the following are in inches
-    public static final double STOWED_HEIGHT = 0;
-    public static final double LEVEL_TWO_HEIGHT = 0; //TODO
-    public static final double LEVEL_THREE_HEIGHT = 0; //TODO
-    public static final double LEVEL_FOUR_HEIGHT = 0; //TODO
-    public static final double MAX_ELEVATOR_HEIGHT = 0; //TODO
+    public static final double STOWED_HEIGHT = 1;
+    public static final double LEVEL_TWO_HEIGHT = 6; //TODO
+    public static final double LEVEL_THREE_HEIGHT = 12; //TODO
+    public static final double LEVEL_FOUR_HEIGHT = 18; //TODO
+    public static final double MAX_ELEVATOR_HEIGHT = 24; //TODO
 
     public static final double LEVEL_TWO_ROT = LEVEL_TWO_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
     public static final double LEVEL_THREE_ROT = LEVEL_THREE_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
@@ -179,14 +177,14 @@ public final class Constants {
     public static final double MAX_ELEVATOR_ROT = MAX_ELEVATOR_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
     public static final double STOWED_ROT = STOWED_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
 
-    public static final double ELEVATOR_OFFSET = 0.01;
+    public static final double ELEVATOR_OFFSET = 0.05;
 
     //TODO: change all of these values to match true elevator gains
     public static final double kG = 0.0;
     public static final double kS = 0.0;
-    public static final double kV = 0.0;
+    public static final double kV = 0.1;
     public static final double kA = 0.0;
-    public static final double kP = 0.0;
+    public static final double kP = 0.15;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     

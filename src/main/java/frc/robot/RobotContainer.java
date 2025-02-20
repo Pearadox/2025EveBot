@@ -115,6 +115,4 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(new SwerveDrive());
     elevator.setDefaultCommand(new ElevatorHold());
   }
-
-
 }

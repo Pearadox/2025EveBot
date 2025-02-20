@@ -13,7 +13,7 @@ public class ElevatorHold extends Command {
   private final Elevator elevator = Elevator.getInstance();
 
   public ElevatorHold() {
-
+    addRequirements(elevator);
   }
 
 

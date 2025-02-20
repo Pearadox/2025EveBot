@@ -67,11 +67,12 @@ public class Elevator extends SubsystemBase {
     elevator.getDutyCycle().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
     elevator.getMotorVoltage().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
     elevator.getTorqueCurrent().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
+    elevator.getSupplyCurrent().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
     elevator.optimizeBusUtilization();
 
     elevatorFollower.getConfigurator().apply(talonFXConfigs);
     elevatorFollower.optimizeBusUtilization();
-    elevatorFollower.setControl(new Follower(ElevatorConstants.ELEVATOR_ID, false));
+    elevatorFollower.setControl(new Follower(ElevatorConstants.ELEVATOR_ID, true));
 
   }
 
@@ -81,6 +82,10 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Velocity (in/sec)", getElevatorVelocity_InchesPerSecond());
     SmartDashboard.putNumber("Elevator Position Rots", getElevatorPositionRots());
     SmartDashboard.putNumber("Elevator Velocity (rot/sec)", getElevatorVelocity_RotsPerSecond());
+    SmartDashboard.putNumber("Elevator Current A", elevator.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator Voltage V", elevator.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Offset", elevatorOffset);
+
   }
 
   public void setElevatorPosition() {
@@ -117,7 +122,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void changeElevatorOffset(double value) {
-    elevatorOffset = MathUtil.clamp(elevatorOffset + value, 0, ElevatorConstants.MAX_ELEVATOR_ROT - ElevatorConstants.LEVEL_FOUR_ROT);
+    elevatorOffset += value;
   }
 
   public void setElevatorStowedMode() {
