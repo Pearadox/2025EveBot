@@ -47,8 +47,11 @@ public class Drivetrain extends SubsystemBase {
   private GenericEntry rightBackStateEntry;
   private GenericEntry robotAngleEntry;
   private GenericEntry angularSpeedEntry;
+  private GenericEntry exponentEntry;
 
   private static final Drivetrain DRIVETRAIN = new Drivetrain();
+
+  private double exponent = 1;
 
   public static Drivetrain getInstance(){
     return DRIVETRAIN;
@@ -75,16 +78,16 @@ public class Drivetrain extends SubsystemBase {
     rightFront = new SwerveModule(
       SwerveConstants.RIGHT_FRONT_DRIVE_ID, 
       SwerveConstants.RIGHT_FRONT_TURN_ID, 
-      false, 
-      false, 
+      true, 
+      true, 
       SwerveConstants.RIGHT_FRONT_CANCODER_ID, 
       SwerveConstants.RIGHT_FRONT_OFFSET);
 
     leftBack = new SwerveModule(
       SwerveConstants.LEFT_BACK_DRIVE_ID, 
       SwerveConstants.LEFT_BACK_TURN_ID, 
-      false, 
-      false, 
+      true, 
+      true, 
       SwerveConstants.LEFT_BACK_CANCODER_ID, 
       SwerveConstants.LEFT_BACK_OFFSET);
     
@@ -119,7 +122,8 @@ public class Drivetrain extends SubsystemBase {
     leftBackStateEntry = swerveTab.add("Left Back Module State", leftBack.getState().toString()).withSize(4, 1).withPosition(0, 2).getEntry();
     rightBackStateEntry = swerveTab.add("Right Back Module State", rightBack.getState().toString()).withSize(4, 1).withPosition(0, 3).getEntry();
     robotAngleEntry = swerveTab.add("Robot Angle", getHeading()).withSize(1, 1).withPosition(4, 1).getEntry();
-    angularSpeedEntry = swerveTab.add("Angular Speed", new DecimalFormat("#.00").format((gyro.getAngularVelocityZWorld().getValueAsDouble() / 180)) + "\u03C0" + " rad/s").withSize(1, 1).withPosition(5, 1).getEntry();
+    angularSpeedEntry = swerveTab.add("Angular Speed", new DecimalFormat("#.00").format((-gyro.getRate() / 180)) + "\u03C0" + " rad/s").withSize(1, 1).withPosition(5, 1).getEntry();
+    exponentEntry = swerveTab.add("Exponent", 1.0).withSize(1, 1).withPosition(4, 2).getEntry();
   }
 
   @Override
@@ -144,7 +148,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void swerveDrive(double frontSpeed, double sideSpeed, double turnSpeed, 
-    boolean fieldOriented, Translation2d centerOfRotation, boolean deadband, int exponent){ //Drive with rotational speed control w/ joystick
+    boolean fieldOriented, Translation2d centerOfRotation, boolean deadband){ //Drive with rotational speed control w/ joystick
+    exponent = exponentEntry.getDouble(1.0);
 
     if(deadband){
       frontSpeed = Math.abs(frontSpeed) > 0.15 ? frontSpeed : 0;
@@ -152,10 +157,9 @@ public class Drivetrain extends SubsystemBase {
       turnSpeed = Math.abs(turnSpeed) > 0.15 ? turnSpeed : 0;
     }
 
-    
-    frontSpeed = Math.pow(frontSpeed, exponent) * exponent % 2 == 0 ? Math.signum(frontSpeed): 1;
-    sideSpeed = Math.pow(sideSpeed, exponent) * exponent % 2 == 0 ? Math.signum(sideSpeed): 1;
-    turnSpeed = Math.pow(turnSpeed, exponent) * exponent % 2 == 0 ? Math.signum(turnSpeed): 1;
+    frontSpeed = Math.pow(frontSpeed, exponent) * (exponent % 2 == 0 ? Math.signum(frontSpeed): 1);
+    sideSpeed = Math.pow(sideSpeed, exponent) * (exponent % 2 == 0 ? Math.signum(sideSpeed): 1);
+    turnSpeed = Math.pow(turnSpeed, exponent) * (exponent % 2 == 0 ? Math.signum(turnSpeed): 1);
 
     frontSpeed = frontLimiter.calculate(frontSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
     sideSpeed = sideLimiter.calculate(sideSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;

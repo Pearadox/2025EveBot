@@ -35,8 +35,7 @@ public class SwerveDrive extends Command {
         -driverController.getRightX(),
         RobotContainer.driverController.getRightTriggerAxis() < 0.9,
         new Translation2d(),
-        true,
-        SwerveConstants.EXPONENT);
+        true);
   }
 
   // Called once the command ends or is interrupted.
