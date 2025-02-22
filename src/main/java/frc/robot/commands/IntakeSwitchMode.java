@@ -5,17 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.groundintake.GroundIntake;
-import frc.robot.subsystems.groundintake.GroundIntake.ArmPivotPos;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class PivotHold extends Command {
-  /** Creates a new groundIntakeHold. */
-
+public class IntakeSwitchMode extends Command {
+  /** Creates a new IntakeSwitchMode. */
   GroundIntake groundIntake = GroundIntake.getInstance();
 
-  public PivotHold() {
+  public IntakeSwitchMode() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(groundIntake);
   }
@@ -27,28 +24,7 @@ public class PivotHold extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    groundIntake.groundIntakeHold();
-
-    // sets the mode to stowed/deployed on a toggle mapped to op controller left bumper
-    if (RobotContainer.opController.getLeftTriggerAxis() >= 0.95 && groundIntake.getPivotPos() == ArmPivotPos.stowed) {
-      groundIntake.setDeployed();
-    }
-    else if (RobotContainer.opController.getLeftTriggerAxis() >= 0.95 && groundIntake.getPivotPos() == ArmPivotPos.deployed) {
-      groundIntake.setStowed();
-    }
-
-    // outtakes rollers if op controller left bumper pressed, else intakes/outtakes based on stowed/deployed
-  //   if (!RobotContainer.opController.getLeftBumperButton()) {
-  //     if (groundIntake.getPivotPos() == ArmPivotPos.stowed) {
-  //       groundIntake.rollerStop();
-  //     }
-  //     else {
-  //       groundIntake.rollerIntake();
-  //     }
-  //   }
-  //   else {
-  //     groundIntake.rollerOuttake();
-  //   }
+    groundIntake.changePivotActivePos();
   }
 
   // Called once the command ends or is interrupted.

@@ -104,7 +104,7 @@ public final class Constants {
     public static final int EXPONENT = 3;
   }
 
-  public static final class GroundIntakeConstants {
+  public static final class IntakeConstants {
     // CANID for pivot
     public static final int PIVOT_ID = 31; // placeholder CANID
     
@@ -116,8 +116,9 @@ public final class Constants {
     public static final double PIVOT_MIN_OUTPUT = -0.5;
     public static final double PIVOT_MAX_OUTPUT = 0.5;
     
-    public static final double PIVOT_STOWED_ROT =  0.0; // TODO: find stowed rot in motor rotations - 61* from horizontal in the prototype CAD
-    public static final double PIVOT_DEPLOYED_ROT = 0.0; // TODO: find deployed rot in motor rotations - -30* from horizontal in the prototype CAD
+    public static final double PIVOT_OUTTAKE_ROT =  0.0; // TODO: find outtake rot in motor rotations
+    public static final double PIVOT_INTAKE_ROT = 0.0; // TODO: find intake rot in motor rotations
+    public static final double PIVOT_STOWED_ROT = 0.0; // TODO: find stowed rot in motor rotations
     // TODO: determine where to 0 the pivot in the prototype CAD
 
     // CANID for roller
@@ -165,13 +166,15 @@ public final class Constants {
       public static final double DISTANCE_FILTER = FieldConstants.FIELD_LENGTH / 2;
   }
 
-  public static final class SimulationConstants{
-    public static final double armLength = Units.inchesToMeters(15);
-    public static final double armMass = Units.lbsToKilograms(7); // TODO: ask Liam for arm details in the CAD
+  // public static final class SimulationConstants{
+  //   public static final double armLength = Units.inchesToMeters(15);
+  //   public static final double armMass = Units.lbsToKilograms(7); // TODO: ask Liam for arm details in the CAD
+    
+  //   public static final double armEncoderDistPerPulse = 0.0078539815; // TODO: correct after sim testing
 
-    public static final double stowedDeg = 90.0;
-    public static final double shootingDeg = 118.0;
-    public static final double deployedDeg = 210.0; // TODO: correct after first sim maybe
+  //   public static final double stowedRad = Units.degreesToRadians(90.0);
+  //   public static final double shootingRad = Units.degreesToRadians(118.0);
+  //   public static final double deployedRad = Units.degreesToRadians(210.0); // TODO: correct after first sim maybe
 
-  }
+  // }
 }

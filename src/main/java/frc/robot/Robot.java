@@ -19,9 +19,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.groundintake.GroundIntakeSim;
+// import frc.robot.subsystems.groundintake.Sim_GroundIntake;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -32,9 +33,10 @@ import frc.robot.subsystems.groundintake.GroundIntakeSim;
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   private Drivetrain drivetrain = Drivetrain.getInstance();
-  private static final NetworkTable llTable = NetworkTableInstance.getDefault().getTable(VisionConstants.LL_NAME);
 
-  private GroundIntakeSim simIntake = GroundIntakeSim.getInstance();
+  // private Sim_GroundIntake sim_groundIntake = Sim_GroundIntake.getInstance();
+
+  private static final NetworkTable llTable = NetworkTableInstance.getDefault().getTable(VisionConstants.LL_NAME);
 
 
   private RobotContainer m_robotContainer;
@@ -147,7 +149,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
     // RobotContainer.poseEstimation.periodic();
-    simIntake.simulationPeriodic();
+    // sim_groundIntake.periodic();
   }
 
   @Override

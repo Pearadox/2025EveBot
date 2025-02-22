@@ -28,10 +28,13 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Drivetrain;
 
-import frc.robot.commands.PivotHold;
-import frc.robot.commands.PivotSimHold;
+// import frc.robot.commands.NeoPivotHold;
+// import frc.robot.subsystems.groundintake.NeoGroundIntake;
+import frc.robot.commands.IntakeHold;
+import frc.robot.commands.IntakeSwitchMode;
 import frc.robot.subsystems.groundintake.GroundIntake;
-import frc.robot.subsystems.groundintake.GroundIntakeSim;
+
+// import frc.robot.subsystems.groundintake.Sim_GroundIntake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -44,7 +47,9 @@ public class RobotContainer {
   public static final Drivetrain drivetrain = Drivetrain.getInstance();
 
   public static final GroundIntake groundIntake = GroundIntake.getInstance();
-  public static final GroundIntakeSim simIntake = GroundIntakeSim.getInstance();
+
+
+  // public static final Sim_GroundIntake sim_groundIntake = Sim_GroundIntake.getInstance();
 
   //Driver Controls
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
@@ -83,8 +88,7 @@ public class RobotContainer {
     //Driver Buttons
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
-    opController.b().onTrue(Commands.runOnce(() -> simIntake.setDeployed(), simIntake));
-
+    opController.leftBumper().onTrue(new InstantCommand(groundIntake::changePivotActivePos));
   }
 
   /**
@@ -110,8 +114,7 @@ public class RobotContainer {
 
   public void setDefaultCommands(){
     drivetrain.setDefaultCommand(new SwerveDrive());
-    groundIntake.setDefaultCommand(new PivotHold());
-    simIntake.setDefaultCommand(new PivotSimHold());
+    groundIntake.setDefaultCommand(new IntakeHold());
     
   }
 

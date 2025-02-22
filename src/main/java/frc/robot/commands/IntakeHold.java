@@ -5,20 +5,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.groundintake.GroundIntake.ArmPivotPos;
-import frc.robot.subsystems.groundintake.GroundIntakeSim;
-import frc.robot.subsystems.groundintake.GroundIntakeSim.SimPivotMode;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.groundintake.GroundIntake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class PivotSimHold extends Command {
+public class IntakeHold extends Command {
+  /** Creates a new IntakeHold. */
 
-  GroundIntakeSim groundIntakeSim = GroundIntakeSim.getInstance();
+  GroundIntake groundIntake = GroundIntake.getInstance();
 
-  /** Creates a new PivotSimHold. */
-  public PivotSimHold() {
+  public IntakeHold() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(groundIntakeSim);
+    addRequirements(groundIntake);
   }
 
   // Called when the command is initially scheduled.
@@ -28,14 +28,7 @@ public class PivotSimHold extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    groundIntakeSim.simIntakeHold();
-
-    if (RobotContainer.opController.getLeftTriggerAxis() >= 0.95 && groundIntakeSim.getSimPivotPos() == SimPivotMode.stowed) {
-      groundIntakeSim.setDeployed();
-    }
-    else if (RobotContainer.opController.getLeftTriggerAxis() >= 0.95 && groundIntakeSim.getSimPivotPos() == SimPivotMode.deployed) {
-      groundIntakeSim.setStowed();
-    }
+    groundIntake.pivotHold(RobotContainer.opController.getLeftTriggerAxis() >= .95);
   }
 
   // Called once the command ends or is interrupted.
