@@ -13,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ArmConstants;
 
 public class Arm extends SubsystemBase {
@@ -22,6 +23,8 @@ public class Arm extends SubsystemBase {
   private enum ArmMode {
     Intake, L2, L3, L4
   }
+
+  private double armAdjust = 0.0;
 
   public static final Arm arm = new Arm();
   public static Arm getInstance() {
@@ -79,15 +82,15 @@ public class Arm extends SubsystemBase {
     PositionVoltage request;
 
     if(armMode == ArmMode.Intake) {
-      request = new PositionVoltage(ArmConstants.ARM_INTAKE_ROT);
+      request = new PositionVoltage(ArmConstants.ARM_INTAKE_ROT + armAdjust);
     } else if(armMode == ArmMode.L2) {
-      request = new PositionVoltage(ArmConstants.ARM_LEVEL_2_ROT);
+      request = new PositionVoltage(ArmConstants.ARM_LEVEL_2_ROT + armAdjust);
     } else if(armMode == ArmMode.L3) {
-      request = new PositionVoltage(ArmConstants.ARM_LEVEL_3_ROT);
+      request = new PositionVoltage(ArmConstants.ARM_LEVEL_3_ROT + armAdjust);
     } else if(armMode == ArmMode.L4) {
-      request = new PositionVoltage(ArmConstants.ARM_LEVEL_4_ROT);      
+      request = new PositionVoltage(ArmConstants.ARM_LEVEL_4_ROT + armAdjust);      
     } else {
-      request = new PositionVoltage(ArmConstants.ARM_STOWED_ROT);
+      request = new PositionVoltage(ArmConstants.ARM_STOWED_ROT + armAdjust);
     }
 
     pivot.setControl(request);
@@ -116,6 +119,10 @@ public class Arm extends SubsystemBase {
   }
 
   public void zeroArm() {
-    pivot.setPosition(Units.degreesToRotations(-90));
+    pivot.setPosition(Units.degreesToRotations(-90) / ArmConstants.ARM_GEAR_RATIO);
+  }
+
+  public void armAdjust(double adjustBy) {
+    armAdjust += adjustBy;
   }
 }

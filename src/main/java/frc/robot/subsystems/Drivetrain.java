@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -78,16 +80,16 @@ public class Drivetrain extends SubsystemBase {
     rightFront = new SwerveModule(
       SwerveConstants.RIGHT_FRONT_DRIVE_ID, 
       SwerveConstants.RIGHT_FRONT_TURN_ID, 
-      true, 
-      true, 
+      false, 
+      false, 
       SwerveConstants.RIGHT_FRONT_CANCODER_ID, 
       SwerveConstants.RIGHT_FRONT_OFFSET);
 
     leftBack = new SwerveModule(
       SwerveConstants.LEFT_BACK_DRIVE_ID, 
       SwerveConstants.LEFT_BACK_TURN_ID, 
-      true, 
-      true, 
+      false, 
+      false, 
       SwerveConstants.LEFT_BACK_CANCODER_ID, 
       SwerveConstants.LEFT_BACK_OFFSET);
     
@@ -122,7 +124,7 @@ public class Drivetrain extends SubsystemBase {
     leftBackStateEntry = swerveTab.add("Left Back Module State", leftBack.getState().toString()).withSize(4, 1).withPosition(0, 2).getEntry();
     rightBackStateEntry = swerveTab.add("Right Back Module State", rightBack.getState().toString()).withSize(4, 1).withPosition(0, 3).getEntry();
     robotAngleEntry = swerveTab.add("Robot Angle", getHeading()).withSize(1, 1).withPosition(4, 1).getEntry();
-    angularSpeedEntry = swerveTab.add("Angular Speed", new DecimalFormat("#.00").format((-gyro.getRate() / 180)) + "\u03C0" + " rad/s").withSize(1, 1).withPosition(5, 1).getEntry();
+    angularSpeedEntry = swerveTab.add("Angular Speed", new DecimalFormat("#.00").format((gyro.getAngularVelocityZWorld().getValueAsDouble() / 180)) + "\u03C0" + " rad/s").withSize(1, 1).withPosition(5, 1).getEntry();
     exponentEntry = swerveTab.add("Exponent", 1.0).withSize(1, 1).withPosition(4, 2).getEntry();
   }
 
@@ -138,10 +140,12 @@ public class Drivetrain extends SubsystemBase {
     // SmarterDashboard.putString("Angular Speed", new DecimalFormat("#.00").format((-gyro.getRate() / 180)) + "\u03C0" + " rad/s", "Drivetrain");
     // SmarterDashboard.putString("Odometry", getPose().toString(), "Drivetrain");
 
-    leftFrontStateEntry.setString(leftFront.getState().toString());
-    rightFrontStateEntry.setString(rightFront.getState().toString());
-    leftBackStateEntry.setString(leftBack.getState().toString());
-    rightBackStateEntry.setString(rightBack.getState().toString());
+    SwerveModuleState[] moduleStates = {leftFront.getState(), rightFront.getState(), leftBack.getState(), rightBack.getState()};
+    Logger.recordOutput("Drive/Swerve Module States", moduleStates);
+    leftFrontStateEntry.setString(moduleStates[0].toString());
+    rightFrontStateEntry.setString(moduleStates[1].toString());
+    leftBackStateEntry.setString(moduleStates[2].toString());
+    rightBackStateEntry.setString(moduleStates[3].toString());
     robotAngleEntry.setDouble(getHeading());
     // angularSpeedEntry.setString(new DecimalFormat("#.00").format((-gyro.getRate() / 180)) + "\u03C0" + "rad/s");
     angularSpeedEntry.setString(new DecimalFormat("#.00").format((gyro.getAngularVelocityZWorld().getValueAsDouble() / 180)) + "\u03C0" + "rad/s");
@@ -174,7 +178,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     SwerveModuleState[] moduleStates = SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds, centerOfRotation);
-
+    Logger.recordOutput("Drive/Desired Module States", moduleStates);
     setModuleStates(moduleStates);
   }
 

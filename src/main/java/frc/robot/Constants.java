@@ -211,6 +211,8 @@ public final class Constants {
     public static final double ARM_INTAKE_ROT = Units.degreesToRotations(-160);    
     public static final double ARM_STOWED_ROT = Units.degreesToRotations(-90);
 
+    public static final double ARM_ADJUST_INCREMENT = 0.05;
+
     public static final double UPDATE_FREQ = 50;
 
     // TODO: tune pid
