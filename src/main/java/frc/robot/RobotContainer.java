@@ -88,12 +88,13 @@ public class RobotContainer {
     //Driver Buttons
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
-    elevatorUp.whileTrue(new RunCommand(() -> elevator.changeElevatorOffset(ElevatorConstants.ELEVATOR_OFFSET)));
-    elevatorDown.whileTrue(new RunCommand(() -> elevator.changeElevatorOffset(-ElevatorConstants.ELEVATOR_OFFSET)));
-    elevatorStowed.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode()));
-    elevatorLevelTwo.onTrue(new InstantCommand(() -> elevator.setElevatorLevelTwoMode()));
-    elevatorLevelThree.onTrue(new InstantCommand(() -> elevator.setElevatorLevelThreeMode()));
-    elevatorLevelFour.onTrue(new InstantCommand(() -> elevator.setElevatorLevelFourMode()));
+    //TODO: uncomment
+    // elevatorUp.whileTrue(new RunCommand(() -> elevator.changeElevatorOffset(ElevatorConstants.ELEVATOR_OFFSET)));
+    // elevatorDown.whileTrue(new RunCommand(() -> elevator.changeElevatorOffset(-ElevatorConstants.ELEVATOR_OFFSET)));
+    // elevatorStowed.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode()));
+    // elevatorLevelTwo.onTrue(new InstantCommand(() -> elevator.setElevatorLevelTwoMode()));
+    // elevatorLevelThree.onTrue(new InstantCommand(() -> elevator.setElevatorLevelThreeMode()));
+    // elevatorLevelFour.onTrue(new InstantCommand(() -> elevator.setElevatorLevelFourMode()));
 
   }
 
