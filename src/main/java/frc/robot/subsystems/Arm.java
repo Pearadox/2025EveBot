@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
@@ -19,9 +20,9 @@ import frc.robot.Constants.ArmConstants;
 public class Arm extends SubsystemBase {
   private PearadoxTalonFX pivot;
 
-  private ArmMode armMode = ArmMode.Intake;
+  private ArmMode armMode = ArmMode.Unpowered;
   private enum ArmMode {
-    Intake, L2, L3, L4
+    Intake, L2, L3, L4, Stowed, Unpowered
   }
 
   private double armAdjust = 0.0;
@@ -66,6 +67,8 @@ public class Arm extends SubsystemBase {
     slot0Configs.kD = ArmConstants.kD; // A velocity error of 1 rps results in x output
 
     pivot.getConfigurator().apply(slot0Configs);
+
+    zeroArm();
   }
 
   @Override
@@ -76,24 +79,33 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("Arm/Voltage", pivot.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("Arm/Supply Current", pivot.getSupplyCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Arm/Stator Current", pivot.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Arm/Adjust", armAdjust);
+    SmartDashboard.putNumber("Arm/Intake Setpoint", ArmConstants.ARM_INTAKE_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+    SmartDashboard.putNumber("Arm/L4 Setpoint", ArmConstants.ARM_LEVEL_4_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+    SmartDashboard.putNumber("Arm/Stow Setpoint", ArmConstants.ARM_STOWED_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+    SmartDashboard.putString("Arm/Mode", armMode.toString());
   }
 
-  public void armHold() {
-    PositionVoltage request;
+  public void armHold() {    
+    // if (armMode == ArmMode.Unpowered) {
+      pivot.set(0);
+      // return;
+    // }
+    
+    // PositionVoltage request;
+    // if(armMode == ArmMode.Intake) {
+    //   request = new PositionVoltage(ArmConstants.ARM_INTAKE_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+    // } else if(armMode == ArmMode.L2) {
+    //   request = new PositionVoltage(ArmConstants.ARM_LEVEL_2_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+    // } else if(armMode == ArmMode.L3) {
+    //   request = new PositionVoltage(ArmConstants.ARM_LEVEL_3_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+    // } else if(armMode == ArmMode.L4) {
+    //   request = new PositionVoltage(ArmConstants.ARM_LEVEL_4_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);      
+    // } else {
+    //   request = new PositionVoltage(ArmConstants.ARM_STOWED_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+    // }
 
-    if(armMode == ArmMode.Intake) {
-      request = new PositionVoltage(ArmConstants.ARM_INTAKE_ROT + armAdjust);
-    } else if(armMode == ArmMode.L2) {
-      request = new PositionVoltage(ArmConstants.ARM_LEVEL_2_ROT + armAdjust);
-    } else if(armMode == ArmMode.L3) {
-      request = new PositionVoltage(ArmConstants.ARM_LEVEL_3_ROT + armAdjust);
-    } else if(armMode == ArmMode.L4) {
-      request = new PositionVoltage(ArmConstants.ARM_LEVEL_4_ROT + armAdjust);      
-    } else {
-      request = new PositionVoltage(ArmConstants.ARM_STOWED_ROT + armAdjust);
-    }
-
-    pivot.setControl(request);
+    // pivot.setControl(request);
   }
 
 
@@ -109,9 +121,15 @@ public class Arm extends SubsystemBase {
   public void setArmL4() {
     armMode = ArmMode.L4;
   }
+  public void setStowed() {
+    armMode = ArmMode.Stowed;
+  }
+  public void setUnpowered() {
+    armMode = ArmMode.Unpowered;
+  }
 
   public double getPivotPosition() {
-    return pivot.getPosition().getValueAsDouble() * ArmConstants.ARM_GEAR_RATIO;
+    return pivot.getPosition().getValueAsDouble() / ArmConstants.ARM_GEAR_RATIO;
   }
 
   public double getArmAngleDegrees() {
@@ -119,7 +137,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void zeroArm() {
-    pivot.setPosition(Units.degreesToRotations(-90) / ArmConstants.ARM_GEAR_RATIO);
+    pivot.setPosition(ArmConstants.ARM_STOWED_ROT * ArmConstants.ARM_GEAR_RATIO);
   }
 
   public void armAdjust(double adjustBy) {

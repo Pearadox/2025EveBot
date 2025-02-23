@@ -4,11 +4,13 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
+import frc.lib.drivers.PearadoxTalonFX;
 import frc.robot.Constants.EndEffectorConstants;
 import frc.robot.RobotContainer;
 import edu.wpi.first.math.filter.Debouncer;
@@ -24,7 +26,7 @@ public class EndEffector extends SubsystemBase {
     return END_EFFECTOR;
   }
 
-  private PearadoxSparkMax endEffector;
+  private PearadoxTalonFX endEffector;
   private DigitalInput endSensor;
   private Debouncer debouncer;
 
@@ -32,7 +34,7 @@ public class EndEffector extends SubsystemBase {
   private boolean isExtended = false; //TODO: integrate with arm
 
   public EndEffector() {
-    endEffector = new PearadoxSparkMax(EndEffectorConstants.END_EFFECTOR_ID, MotorType.kBrushless, IdleMode.kBrake, 50, false);
+    endEffector = new PearadoxTalonFX(EndEffectorConstants.END_EFFECTOR_ID, NeutralModeValue.Brake, 50, false);
     endSensor = new DigitalInput(EndEffectorConstants.END_SENSOR_CHANNEL);
     debouncer = new Debouncer(0.2, DebounceType.kFalling);
   }
@@ -61,7 +63,7 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void coralOut(){
-    endEffector.set(-EndEffectorConstants.PUSH_VOLTAGE);
+    endEffector.set(EndEffectorConstants.PUSH_VOLTAGE);
   }
 
   public void stopEndEffector(){

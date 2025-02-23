@@ -108,8 +108,8 @@ public final class Constants {
   public static final class EndEffectorConstants{
     public static final int END_EFFECTOR_ID = 23;
 
-    public static final double PULL_VOLTAGE = 0.0;
-    public static final double PUSH_VOLTAGE = 0.0;
+    public static final double PULL_VOLTAGE = 0.25;
+    public static final double PUSH_VOLTAGE = -0.25;
 
 
     public static final int END_SENSOR_CHANNEL = 0;
@@ -203,7 +203,7 @@ public final class Constants {
     public static final int ARM_KRAKEN_ID = 22;
     public static final int CURRENT_LIMIT = 40;
 
-    public static final double ARM_GEAR_RATIO = 3; // TODO
+    public static final double ARM_GEAR_RATIO = 60; // TODO
 
     public static final double ARM_LEVEL_4_ROT = Units.degreesToRotations(50);
     public static final double ARM_LEVEL_3_ROT = Units.degreesToRotations(-45);
@@ -211,7 +211,7 @@ public final class Constants {
     public static final double ARM_INTAKE_ROT = Units.degreesToRotations(-160);    
     public static final double ARM_STOWED_ROT = Units.degreesToRotations(-90);
 
-    public static final double ARM_ADJUST_INCREMENT = 0.05;
+    public static final double ARM_ADJUST_INCREMENT = 0.075;
 
     public static final double UPDATE_FREQ = 50;
 
