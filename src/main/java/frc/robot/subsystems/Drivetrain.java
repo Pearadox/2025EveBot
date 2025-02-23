@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -38,7 +39,8 @@ public class Drivetrain extends SubsystemBase {
   private SlewRateLimiter sideLimiter;
   private SlewRateLimiter turnLimiter;
 
-  private AHRS gyro;
+  // private AHRS gyro;
+  private Pigeon2 gyro;
 
   public static final ShuffleboardTab swerveTab = Shuffleboard.getTab("Swerve");
   private GenericEntry leftFrontStateEntry;
@@ -103,7 +105,8 @@ public class Drivetrain extends SubsystemBase {
     sideLimiter = new SlewRateLimiter(SwerveConstants.TELE_DRIVE_MAX_ACCELERATION);
     turnLimiter = new SlewRateLimiter(SwerveConstants.TELE_DRIVE_MAX_ANGULAR_ACCELERATION);
 
-    gyro = new AHRS(NavXComType.kMXP_SPI);
+    // gyro = new AHRS(NavXComType.kMXP_SPI);
+    gyro = new Pigeon2(SwerveConstants.PIGEON_ID);
   
 
     
@@ -121,7 +124,7 @@ public class Drivetrain extends SubsystemBase {
     leftBackStateEntry = swerveTab.add("Left Back Module State", leftBack.getState().toString()).withSize(4, 1).withPosition(0, 2).getEntry();
     rightBackStateEntry = swerveTab.add("Right Back Module State", rightBack.getState().toString()).withSize(4, 1).withPosition(0, 3).getEntry();
     robotAngleEntry = swerveTab.add("Robot Angle", getHeading()).withSize(1, 1).withPosition(4, 1).getEntry();
-    angularSpeedEntry = swerveTab.add("Angular Speed", new DecimalFormat("#.00").format((-gyro.getRate() / 180)) + "\u03C0" + " rad/s").withSize(1, 1).withPosition(5, 1).getEntry();
+    angularSpeedEntry = swerveTab.add("Angular Speed", new DecimalFormat("#.00").format((gyro.getAngularVelocityZWorld().getValueAsDouble() / 180)) + "\u03C0" + " rad/s").withSize(1, 1).withPosition(5, 1).getEntry();
     exponentEntry = swerveTab.add("Exponent", 1.0).withSize(1, 1).withPosition(4, 2).getEntry();
   }
 
@@ -142,7 +145,7 @@ public class Drivetrain extends SubsystemBase {
     leftBackStateEntry.setString(leftBack.getState().toString());
     rightBackStateEntry.setString(rightBack.getState().toString());
     robotAngleEntry.setDouble(getHeading());
-    angularSpeedEntry.setString(new DecimalFormat("#.00").format((-gyro.getRate() / 180)) + "\u03C0" + "rad/s");
+    angularSpeedEntry.setString(new DecimalFormat("#.00").format((gyro.getAngularVelocityZWorld().getValueAsDouble() / 180)) + "\u03C0" + "rad/s");
   }
 
   public void swerveDrive(double frontSpeed, double sideSpeed, double turnSpeed, 
@@ -230,15 +233,17 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void zeroHeading(){
-    gyro.zeroYaw();
+    // gyro.zeroYaw();
+    gyro.setYaw(0);
   }
 
   public void setHeading(double heading){
-    gyro.setAngleAdjustment(heading);
+    // gyro.setAngleAdjustment(heading);
+    gyro.setYaw(heading);
   }
 
   public double getHeading(){
-    return Math.IEEEremainder(-gyro.getAngle(), 360); //clamp heading between -180 and 180
+    return Math.IEEEremainder(gyro.getYaw().getValueAsDouble(), 360); //clamp heading between -180 and 180
   }
 
   public Rotation2d getHeadingRotation2d(){
