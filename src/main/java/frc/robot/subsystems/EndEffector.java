@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -11,6 +12,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.EndEffectorConstants;
 import frc.robot.RobotContainer;
 import edu.wpi.first.math.filter.Debouncer;
@@ -33,10 +35,21 @@ public class EndEffector extends SubsystemBase {
   private boolean rumbled = false;
   private boolean isExtended = false; //TODO: integrate with arm
 
+
   public EndEffector() {
     endEffector = new PearadoxTalonFX(EndEffectorConstants.END_EFFECTOR_ID, NeutralModeValue.Brake, 50, false);
     endSensor = new DigitalInput(EndEffectorConstants.END_SENSOR_CHANNEL);
     debouncer = new Debouncer(0.2, DebounceType.kFalling);
+
+    BaseStatusSignal.setUpdateFrequencyForAll(ArmConstants.UPDATE_FREQ, 
+        endEffector.getPosition(), 
+        endEffector.getVelocity(),
+        endEffector.getDutyCycle(),
+        endEffector.getMotorVoltage(),
+        endEffector.getTorqueCurrent(),
+        endEffector.getSupplyCurrent(),
+        endEffector.getStatorCurrent()
+    );
   }
 
   @Override
@@ -44,12 +57,17 @@ public class EndEffector extends SubsystemBase {
     collectCoral();
 
     SmartDashboard.putBoolean("End Sensor", hasCoral());
+
+    SmartDashboard.putNumber("EE Stator Current", endEffector.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("EE Supply Current", endEffector.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("EE Volts", endEffector.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("EE Angular Velocity", endEffector.getVelocity().getValueAsDouble());
   }
 
   public void collectCoral() {
-    if(RobotContainer.driverController.getRightTriggerAxis() >= 0.95){
+    if(RobotContainer.driverController.getRightTriggerAxis() >= 0.2){
       coralIn();
-    } else if(RobotContainer.driverController.getLeftTriggerAxis() >= 0.95){
+    } else if(RobotContainer.driverController.getLeftTriggerAxis() >= 0.2){
       coralOut();
     } else if(hasCoral()){
       stopEndEffector();
@@ -59,11 +77,15 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void coralIn(){
-    endEffector.set(EndEffectorConstants.PULL_VOLTAGE);
+    endEffector.set(EndEffectorConstants.PULL_VOLTAGE * RobotContainer.driverController.getRightTriggerAxis());
   }
 
   public void coralOut(){
-    endEffector.set(EndEffectorConstants.PUSH_VOLTAGE);
+    endEffector.set(EndEffectorConstants.PUSH_VOLTAGE * RobotContainer.driverController.getLeftTriggerAxis());
+  }
+
+  public void holdCoral(){
+    endEffector.set(-0.05);
   }
 
   public void stopEndEffector(){

@@ -28,11 +28,14 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.ArmHold;
 import frc.robot.commands.ElevatorHold;
+import frc.robot.commands.EndEffectorHold;
+import frc.robot.commands.IntakeHold;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.EndEffector;
+import frc.robot.subsystems.GroundIntake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -47,6 +50,7 @@ public class RobotContainer {
   public static final Elevator elevator = Elevator.getInstance();
   public static final Arm arm = Arm.getInstance();
   public static final EndEffector endEffector = EndEffector.getInstance();
+  public static final GroundIntake groundIntake = GroundIntake.getInstance();
 
   //Driver Controls
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
@@ -60,13 +64,16 @@ public class RobotContainer {
   private final JoystickButton armAdjustUp = new JoystickButton(driverController, XboxController.Button.kX.value);
   private final JoystickButton armAdjustDown = new JoystickButton(driverController, XboxController.Button.kB.value);
 
-  // private final JoystickButton stow = new JoystickButton(opController, XboxController.Button.kX.value);
-  // private final JoystickButton levelTwo = new JoystickButton(opController, XboxController.Button.kY.value);
-  // private final JoystickButton levelThree = new JoystickButton(opController, XboxController.Button.kB.value);
-  // private final JoystickButton levelFour = new JoystickButton(opController, XboxController.Button.kA.value);
-  // private final JoystickButton intake = new JoystickButton(opController, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton armZero = new JoystickButton(opController, XboxController.Button.kRightBumper.value);
-  private final JoystickButton armUnpower = new JoystickButton(opController, XboxController.Button.kA.value);
+  private final JoystickButton stow = new JoystickButton(opController, XboxController.Button.kX.value);
+  private final JoystickButton levelTwo = new JoystickButton(opController, XboxController.Button.kY.value);
+  private final JoystickButton levelThree = new JoystickButton(opController, XboxController.Button.kB.value);
+  private final JoystickButton levelFour = new JoystickButton(opController, XboxController.Button.kA.value);
+  private final JoystickButton intake = new JoystickButton(opController, XboxController.Button.kLeftBumper.value);
+
+  // private final JoystickButton armZero = new JoystickButton(opController, XboxController.Button.kRightBumper.value);
+  // private final JoystickButton armUnpower = new JoystickButton(opController, XboxController.Button.kA.value);
+
+  private final JoystickButton intakeActive = new JoystickButton(opController, XboxController.Button.kLeftBumper.value);
 
   //Pose Estimation
 
@@ -97,21 +104,23 @@ public class RobotContainer {
 
     elevatorUp.whileTrue(new RunCommand(() -> elevator.changeElevatorOffset(ElevatorConstants.ELEVATOR_OFFSET)));
     elevatorDown.whileTrue(new RunCommand(() -> elevator.changeElevatorOffset(-ElevatorConstants.ELEVATOR_OFFSET)));
-    // armAdjustUp.whileTrue(new RunCommand(() -> arm.armAdjust(ArmConstants.ARM_ADJUST_INCREMENT)));
-    // armAdjustDown.whileTrue(new RunCommand(() -> arm.armAdjust(-ArmConstants.ARM_ADJUST_INCREMENT)));
-    // stow.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode())
-    //   .andThen(new InstantCommand(() -> arm.setStowed())));
-    // levelTwo.onTrue(new InstantCommand(() -> elevator.setElevatorLevelTwoMode())
-    //   .andThen(new InstantCommand(() -> arm.setArmL2())));
-    // levelThree.onTrue(new InstantCommand(() -> elevator.setElevatorLevelThreeMode())
-    //   .andThen(new InstantCommand(() -> arm.setArmL3())));
-    // levelFour.onTrue(new InstantCommand(() -> elevator.setElevatorLevelFourMode())
-    //   .andThen(new InstantCommand(() -> arm.setArmL4())));
-    // intake.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode())
-    //   .andThen(new InstantCommand(() -> arm.setStowed())));
+    armAdjustUp.whileTrue(new RunCommand(() -> arm.armAdjust(ArmConstants.ARM_ADJUST_INCREMENT)));
+    armAdjustDown.whileTrue(new RunCommand(() -> arm.armAdjust(-ArmConstants.ARM_ADJUST_INCREMENT)));
+    stow.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode())
+      .andThen(new InstantCommand(() -> arm.setStowed())));
+    levelTwo.onTrue(new InstantCommand(() -> elevator.setElevatorLevelTwoMode())
+      .andThen(new InstantCommand(() -> arm.setArmIntake())));
+    levelThree.onTrue(new InstantCommand(() -> elevator.setElevatorLevelThreeMode())
+      .andThen(new InstantCommand(() -> arm.setArmL3())));
+    levelFour.onTrue(new InstantCommand(() -> elevator.setElevatorLevelFourMode())
+      .andThen(new InstantCommand(() -> arm.setArmL4())));
+    intake.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode())
+      .andThen(new InstantCommand(() -> arm.setStowed())));
 
-    armZero.onTrue(new InstantCommand(() -> arm.zeroArm()).ignoringDisable(true));
-    armUnpower.onTrue(new InstantCommand(() -> arm.setUnpowered()));
+    // armZero.onTrue(new InstantCommand(() -> arm.zeroArm()).ignoringDisable(true));
+    // armUnpower.onTrue(new InstantCommand(() -> arm.setUnpowered()));
+
+    
   }
 
   /**
@@ -132,5 +141,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(new SwerveDrive());
     elevator.setDefaultCommand(new ElevatorHold());
     arm.setDefaultCommand(new ArmHold());
+    endEffector.setDefaultCommand(new EndEffectorHold());
+    // groundIntake.setDefaultCommand(new IntakeHold());
   }
 }

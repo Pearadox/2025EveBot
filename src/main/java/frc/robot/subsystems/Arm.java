@@ -19,8 +19,9 @@ import frc.robot.Constants.ArmConstants;
 
 public class Arm extends SubsystemBase {
   private PearadoxTalonFX pivot;
+  private PearadoxTalonFX motor41;
 
-  private ArmMode armMode = ArmMode.Unpowered;
+  private ArmMode armMode = ArmMode.Stowed;
   private enum ArmMode {
     Intake, L2, L3, L4, Stowed, Unpowered
   }
@@ -34,7 +35,7 @@ public class Arm extends SubsystemBase {
 
   public Arm() {
     pivot = new PearadoxTalonFX(ArmConstants.ARM_KRAKEN_ID, NeutralModeValue.Brake, ArmConstants.CURRENT_LIMIT, true);
-
+    motor41 = new PearadoxTalonFX(40, NeutralModeValue.Brake, 40, false);
     // pivot.getPosition().setUpdateFrequency(ArmConstants.UPDATE_FREQ);
     // pivot.getVelocity().setUpdateFrequency(ArmConstants.UPDATE_FREQ);
 
@@ -87,25 +88,25 @@ public class Arm extends SubsystemBase {
   }
 
   public void armHold() {    
-    // if (armMode == ArmMode.Unpowered) {
+    if (armMode == ArmMode.Unpowered) {
       pivot.set(0);
-      // return;
-    // }
+      return;
+    }
     
-    // PositionVoltage request;
-    // if(armMode == ArmMode.Intake) {
-    //   request = new PositionVoltage(ArmConstants.ARM_INTAKE_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
-    // } else if(armMode == ArmMode.L2) {
-    //   request = new PositionVoltage(ArmConstants.ARM_LEVEL_2_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
-    // } else if(armMode == ArmMode.L3) {
-    //   request = new PositionVoltage(ArmConstants.ARM_LEVEL_3_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
-    // } else if(armMode == ArmMode.L4) {
-    //   request = new PositionVoltage(ArmConstants.ARM_LEVEL_4_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);      
-    // } else {
-    //   request = new PositionVoltage(ArmConstants.ARM_STOWED_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
-    // }
+    PositionVoltage request;
+    if(armMode == ArmMode.Intake) {
+      request = new PositionVoltage(ArmConstants.ARM_INTAKE_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+    } else if(armMode == ArmMode.L2) {
+      request = new PositionVoltage(ArmConstants.ARM_LEVEL_2_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+    } else if(armMode == ArmMode.L3) {
+      request = new PositionVoltage(ArmConstants.ARM_LEVEL_3_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+    } else if(armMode == ArmMode.L4) {
+      request = new PositionVoltage(ArmConstants.ARM_LEVEL_4_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);      
+    } else {
+      request = new PositionVoltage(ArmConstants.ARM_STOWED_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+    }
 
-    // pivot.setControl(request);
+    pivot.setControl(request);
   }
 
 
