@@ -63,9 +63,10 @@ public class RobotContainer {
   private final JoystickButton elevatorDown = new JoystickButton(driverController, XboxController.Button.kA.value);
   private final JoystickButton armAdjustUp = new JoystickButton(driverController, XboxController.Button.kX.value);
   private final JoystickButton armAdjustDown = new JoystickButton(driverController, XboxController.Button.kB.value);
+  private final JoystickButton setPID = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
 
   private final JoystickButton stow = new JoystickButton(opController, XboxController.Button.kX.value);
-  private final JoystickButton levelTwo = new JoystickButton(opController, XboxController.Button.kY.value);
+  private final JoystickButton station = new JoystickButton(opController, XboxController.Button.kY.value);
   private final JoystickButton levelThree = new JoystickButton(opController, XboxController.Button.kB.value);
   private final JoystickButton levelFour = new JoystickButton(opController, XboxController.Button.kA.value);
   private final JoystickButton intake = new JoystickButton(opController, XboxController.Button.kLeftBumper.value);
@@ -108,7 +109,7 @@ public class RobotContainer {
     armAdjustDown.whileTrue(new RunCommand(() -> arm.armAdjust(-ArmConstants.ARM_ADJUST_INCREMENT)));
     stow.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode())
       .andThen(new InstantCommand(() -> arm.setStowed())));
-    levelTwo.onTrue(new InstantCommand(() -> elevator.setElevatorLevelTwoMode())
+    station.onTrue(new InstantCommand(() -> elevator.setElevatorStationMode())
       .andThen(new InstantCommand(() -> arm.setArmIntake())));
     levelThree.onTrue(new InstantCommand(() -> elevator.setElevatorLevelThreeMode())
       .andThen(new InstantCommand(() -> arm.setArmL3())));
@@ -116,6 +117,8 @@ public class RobotContainer {
       .andThen(new InstantCommand(() -> arm.setArmL4())));
     intake.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode())
       .andThen(new InstantCommand(() -> arm.setStowed())));
+
+    setPID.onTrue(new InstantCommand(() -> elevator.setPID()));
 
     // armZero.onTrue(new InstantCommand(() -> arm.zeroArm()).ignoringDisable(true));
     // armUnpower.onTrue(new InstantCommand(() -> arm.setUnpowered()));
@@ -143,5 +146,6 @@ public class RobotContainer {
     arm.setDefaultCommand(new ArmHold());
     endEffector.setDefaultCommand(new EndEffectorHold());
     // groundIntake.setDefaultCommand(new IntakeHold());
+
   }
 }

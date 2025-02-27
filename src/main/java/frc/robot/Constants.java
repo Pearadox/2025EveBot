@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.servohub.config.ServoChannelConfig.PulseRange;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -170,38 +171,44 @@ public final class Constants {
 
     public static final double TICKS_PER_REV = 4000; //TODO
     public static final double GEAR_RATIO = 3; //TODO
-    public static final double SPROCKET_PITCH_DIAMETER = 2.0; //TODO should be chain pitch * number of teeth / pi
-    public static final double kRotationToInches = SPROCKET_PITCH_DIAMETER * Math.PI / GEAR_RATIO;
+    public static final double PULLEY_DIAMETER = 2.005; //TODO should be chain pitch * number of teeth / pi
+    public static final double kRotationToInches = PULLEY_DIAMETER * Math.PI / GEAR_RATIO;
 
     //the following are in inches
-    // public static final double STOWED_HEIGHT = 1;
-    // public static final double LEVEL_TWO_HEIGHT = 6; //TODO
-    // public static final double LEVEL_THREE_HEIGHT = 12; //TODO
-    // public static final double LEVEL_FOUR_HEIGHT = 18; //TODO
-    // public static final double MAX_ELEVATOR_HEIGHT = 24; //TODO
+    public static final double STOWED_HEIGHT = 0;
+    public static final double STATION_HEIGHT = 9; //TODO
+    public static final double LEVEL_TWO_HEIGHT = 0; //TODO
+    public static final double LEVEL_THREE_HEIGHT = 21; //TODO
+    public static final double LEVEL_FOUR_HEIGHT = 30; //TODO
 
-    // public static final double LEVEL_TWO_ROT = LEVEL_TWO_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
-    // public static final double LEVEL_THREE_ROT = LEVEL_THREE_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
-    // public static final double LEVEL_FOUR_ROT = LEVEL_FOUR_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
-    // public static final double MAX_ELEVATOR_ROT = MAX_ELEVATOR_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
-    // public static final double STOWED_ROT = STOWED_HEIGHT * GEAR_RATIO / (Math.PI * SPROCKET_PITCH_DIAMETER);
 
-    public static final double LEVEL_TWO_ROT = 3.868;
-    public static final double LEVEL_THREE_ROT = 10;
-    public static final double LEVEL_FOUR_ROT = 15.5;
-    public static final double MAX_ELEVATOR_ROT = 15.5; // 15.65
-    public static final double STOWED_ROT = 0;
+    public static final double MAX_ELEVATOR_HEIGHT = 20; //TODO
+
+    public static final double LEVEL_TWO_ROT = LEVEL_TWO_HEIGHT * GEAR_RATIO / (Math.PI * PULLEY_DIAMETER);
+    public static final double STATION_ROT = STATION_HEIGHT * GEAR_RATIO / (Math.PI * PULLEY_DIAMETER);
+    public static final double LEVEL_THREE_ROT = LEVEL_THREE_HEIGHT * GEAR_RATIO / (Math.PI * PULLEY_DIAMETER);
+    public static final double LEVEL_FOUR_ROT = LEVEL_FOUR_HEIGHT * GEAR_RATIO / (Math.PI * PULLEY_DIAMETER);
+    public static final double MAX_ELEVATOR_ROT = MAX_ELEVATOR_HEIGHT * GEAR_RATIO / (Math.PI * PULLEY_DIAMETER);
+    public static final double STOWED_ROT = STOWED_HEIGHT * GEAR_RATIO / (Math.PI * PULLEY_DIAMETER);
+
+
+    // public static final double STATION_ROT = 3.868;
+    // public static final double LEVEL_TWO_ROT = 3.868;
+    // public static final double LEVEL_THREE_ROT = 10;
+    // public static final double LEVEL_FOUR_ROT = 15.0;
+    // public static final double MAX_ELEVATOR_ROT = 15.5; // 15.65
+    // public static final double STOWED_ROT = 0;
 
     public static final double ELEVATOR_OFFSET = 0.05;
 
     //TODO: change all of these values to match true elevator gains
-    public static final double kG = 0.0;
-    public static final double kS = 0.0;
-    public static final double kV = 0.1;
-    public static final double kA = 0.0;
-    public static final double kP = 0.15;
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
+    public static final double kG = 0.;
+    public static final double kS = 0.2;
+    public static final double kV = 0.2;
+    public static final double kA = 0.02;
+    public static final double kP = 0.4;
+    public static final double kI = 0.00;
+    public static final double kD = 0.000;
   }
 
   public static final class ArmConstants {
@@ -211,11 +218,11 @@ public final class Constants {
 
     public static final double ARM_GEAR_RATIO = 60; // TODO
 
-    public static final double ARM_LEVEL_4_ROT = Units.degreesToRotations(50);
-    public static final double ARM_LEVEL_3_ROT = Units.degreesToRotations(-45);
-    public static final double ARM_LEVEL_2_ROT = Units.degreesToRotations(-45);
-    public static final double ARM_INTAKE_ROT = Units.degreesToRotations(-170);    //-24.734
-    public static final double ARM_STOWED_ROT = Units.degreesToRotations(-90);
+    public static final double ARM_LEVEL_4_ROT = Units.degreesToRotations(-174.7470703125);
+    public static final double ARM_LEVEL_3_ROT = Units.degreesToRotations(-74.455078125);
+    public static final double ARM_LEVEL_2_ROT = Units.degreesToRotations(-88);
+    public static final double ARM_INTAKE_ROT = Units.degreesToRotations(40);    //-24.734
+    public static final double ARM_STOWED_ROT = Units.degreesToRotations(-88); //should be 0
 
     public static final double ARM_ADJUST_INCREMENT = 0.075;
 
@@ -226,7 +233,7 @@ public final class Constants {
     public static final double kS = 0.0;
     public static final double kV = 0.1;
     public static final double kA = 0.0;
-    public static final double kP = 0.15;
+    public static final double kP = 0.2;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
   }
@@ -245,12 +252,13 @@ public final class Constants {
     public static final double PIVOT_MIN_OUTPUT = -0.5;
     public static final double PIVOT_MAX_OUTPUT = 0.5;
     
-    public static final double PIVOT_OUTTAKE_ROT =  0.0; // TODO: find outtake rot in motor rotations
-    public static final double PIVOT_INTAKE_ROT = 0.0; // TODO: find intake rot in motor rotations
-    public static final double PIVOT_STOWED_ROT = 0.37; // TODO: find stowed rot in motor rotations
-    // TODO: determine where to 0 the pivot in the prototype CAD
+    public static final double PIVOT_GEARING = 25; // 25:1 reduction gear ratio
 
-    // CANID for roller
+    public static final double PIVOT_OUTTAKE_ROT = Units.degreesToRotations(-10.0) * PIVOT_GEARING; // TODO: find outtake rot in motor rotations
+    public static final double PIVOT_INTAKE_ROT = Units.degreesToRotations(-90.0) * PIVOT_GEARING; // TODO: find intake rot in motor rotations
+    public static final double PIVOT_STOWED_ROT = Units.degreesToRotations(0.0) * PIVOT_GEARING; // TODO: find stowed rot in motor rotations
+
+    // CAN ID for roller
     public static final int ROLLER_ID = 41;
   }
 }

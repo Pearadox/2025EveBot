@@ -22,8 +22,10 @@ public class Elevator extends SubsystemBase {
   private MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0);
   private double elevatorOffset = 0.0;
 
-  private static enum ElevatorMode { STOWED, LEVEL_TWO, LEVEL_THREE, LEVEL_FOUR; }
+  private static enum ElevatorMode { STOWED, STATION, LEVEL_TWO, LEVEL_THREE, LEVEL_FOUR; }
   private ElevatorMode elevatorMode = ElevatorMode.STOWED;
+  private double lowest_rot = ElevatorConstants.STOWED_ROT;
+  private double highest_rot = ElevatorConstants.MAX_ELEVATOR_ROT;
   
   private static Elevator ELEVATOR = new Elevator();
   public static Elevator getInstance() {
@@ -86,32 +88,44 @@ public class Elevator extends SubsystemBase {
     elevatorFollower.getConfigurator().apply(talonFXConfigs);
     elevatorFollower.optimizeBusUtilization();
     elevatorFollower.setControl(new Follower(ElevatorConstants.ELEVATOR_ID, true));
+
+    
+    SmartDashboard.putNumber("Elevator kG", ElevatorConstants.kG);
+    SmartDashboard.putNumber("Elevator kS", ElevatorConstants.kS);
+    SmartDashboard.putNumber("Elevator kV", ElevatorConstants.kV);
+    SmartDashboard.putNumber("Elevator kA", ElevatorConstants.kA);
+    SmartDashboard.putNumber("Elevator kP", ElevatorConstants.kP);
+    SmartDashboard.putNumber("Elevator kI", ElevatorConstants.kI);
+    SmartDashboard.putNumber("Elevator kD", ElevatorConstants.kD);
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Elevator/Position Inches", getElevatorPositionInches());
-    SmartDashboard.putNumber("Elevator/Velocity (in/sec)", getElevatorVelocity_InchesPerSecond());
+    SmartDashboard.putNumber("Elevator/Velocity (in/sec)", getElevatorVelocityInchesPerSecond());
     SmartDashboard.putNumber("Elevator/Position Rots", getElevatorPositionRots());
     SmartDashboard.putNumber("Elevator/Velocity (rot/sec)", getElevatorVelocity_RotsPerSecond());
     SmartDashboard.putNumber("Elevator/Supply Current A", elevator.getSupplyCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Elevator/Stator Current A", elevator.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Elevator/Voltage V", elevator.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("Elevator/Offset", elevatorOffset);
+
   }
 
   public void setElevatorPosition() {
     if(elevatorMode == ElevatorMode.STOWED) {
-      elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.STOWED_ROT + elevatorOffset));
+      elevator.setControl(motionMagicRequest.withPosition(Math.max(lowest_rot, Math.min((ElevatorConstants.STOWED_ROT + elevatorOffset), highest_rot))));
+    }else if(elevatorMode == ElevatorMode.STATION){
+      elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.STATION_ROT + elevatorOffset));
     }
     else if(elevatorMode == ElevatorMode.LEVEL_TWO) {
       elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.LEVEL_TWO_ROT + elevatorOffset));
     }
     else if(elevatorMode == ElevatorMode.LEVEL_THREE) {
-      elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.LEVEL_THREE_ROT + elevatorOffset));
+      elevator.setControl(motionMagicRequest.withPosition(10 + elevatorOffset));
     }
     else if(elevatorMode == ElevatorMode.LEVEL_FOUR) {
-      elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.LEVEL_FOUR_ROT + elevatorOffset));
+      elevator.setControl(motionMagicRequest.withPosition(14 + elevatorOffset));
     }
   }
 
@@ -127,7 +141,7 @@ public class Elevator extends SubsystemBase {
     return getElevatorPositionRots() * ElevatorConstants.kRotationToInches;
   }
 
-  public double getElevatorVelocity_InchesPerSecond() {
+  public double getElevatorVelocityInchesPerSecond() {
     return getElevatorVelocity_RotsPerSecond() * ElevatorConstants.kRotationToInches;
   }
 
@@ -137,6 +151,10 @@ public class Elevator extends SubsystemBase {
 
   public void setElevatorStowedMode() {
     elevatorMode = ElevatorMode.STOWED;
+  }
+
+  public void setElevatorStationMode(){
+    elevatorMode = ElevatorMode.STATION;
   }
 
   public void setElevatorLevelTwoMode() {
@@ -149,6 +167,26 @@ public class Elevator extends SubsystemBase {
 
   public void setElevatorLevelFourMode() {
     elevatorMode = ElevatorMode.LEVEL_FOUR;
+  }
+
+  public void setPID(){
+    var talonFXConfigs = new TalonFXConfiguration();
+
+    var slot0Configs = talonFXConfigs.Slot0;
+    slot0Configs.kG = SmartDashboard.getNumber("Elevator kG", ElevatorConstants.kG);
+    slot0Configs.kS = SmartDashboard.getNumber("Elevator kS", ElevatorConstants.kS);
+    slot0Configs.kV = SmartDashboard.getNumber("Elevator kV", ElevatorConstants.kV);
+    slot0Configs.kA = SmartDashboard.getNumber("Elevator kA", ElevatorConstants.kA);
+    slot0Configs.kP = SmartDashboard.getNumber("Elevator kP", ElevatorConstants.kP);
+    slot0Configs.kI = SmartDashboard.getNumber("Elevator kI", ElevatorConstants.kI);
+    slot0Configs.kD = SmartDashboard.getNumber("Elevator kD", ElevatorConstants.kD);
+
+    var motionMagicConfigs = talonFXConfigs.MotionMagic;
+    motionMagicConfigs.MotionMagicCruiseVelocity = ElevatorConstants.MM_CRUISE_VELCOCITY; // Target cruise velocity of 80 rps
+    motionMagicConfigs.MotionMagicAcceleration = ElevatorConstants.MM_ACCELERATION; // Target acceleration of 160 rps/s (0.5 seconds)
+    // (not sure if needed - > ) motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+    elevator.getConfigurator().apply(talonFXConfigs);
   }
 
 

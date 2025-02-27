@@ -69,7 +69,7 @@ public class Arm extends SubsystemBase {
 
     pivot.getConfigurator().apply(slot0Configs);
 
-    zeroArm();
+    // zeroArm();
   }
 
   @Override
@@ -95,13 +95,13 @@ public class Arm extends SubsystemBase {
     
     PositionVoltage request;
     if(armMode == ArmMode.Intake) {
-      request = new PositionVoltage(ArmConstants.ARM_INTAKE_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+      request = new PositionVoltage(ArmConstants.ARM_INTAKE_ROT * ArmConstants.ARM_GEAR_RATIO  + armAdjust);
     } else if(armMode == ArmMode.L2) {
       request = new PositionVoltage(ArmConstants.ARM_LEVEL_2_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
     } else if(armMode == ArmMode.L3) {
       request = new PositionVoltage(ArmConstants.ARM_LEVEL_3_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
     } else if(armMode == ArmMode.L4) {
-      request = new PositionVoltage(ArmConstants.ARM_LEVEL_4_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);      
+      request = new PositionVoltage(ArmConstants.ARM_LEVEL_4_ROT  * ArmConstants.ARM_GEAR_RATIO + armAdjust);      
     } else {
       request = new PositionVoltage(ArmConstants.ARM_STOWED_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
     }

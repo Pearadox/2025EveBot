@@ -34,6 +34,7 @@ public class EndEffector extends SubsystemBase {
 
   private boolean rumbled = false;
   private boolean isExtended = false; //TODO: integrate with arm
+  private boolean isHolding = false;
 
 
   public EndEffector() {
@@ -65,14 +66,12 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void collectCoral() {
-    if(RobotContainer.driverController.getRightTriggerAxis() >= 0.2){
+    if(RobotContainer.driverController.getRightTriggerAxis() >= 0.9){
       coralIn();
-    } else if(RobotContainer.driverController.getLeftTriggerAxis() >= 0.2){
+    } else if(RobotContainer.driverController.getLeftTriggerAxis() >= 0.9){
       coralOut();
-    } else if(hasCoral()){
-      stopEndEffector();
-    } else{
-      stopEndEffector();
+    }else{
+      slowEndEffector();
     }
   }
 
@@ -88,11 +87,23 @@ public class EndEffector extends SubsystemBase {
     endEffector.set(-0.05);
   }
 
+  public void slowEndEffector(){
+    endEffector.set(0.1);
+  }
   public void stopEndEffector(){
-    endEffector.set(0.0);
+    endEffector.set(0);
   }
 
   public boolean hasCoral(){
-    return debouncer.calculate(!endSensor.get());
+    return endEffector.getStatorCurrent().getValueAsDouble() > 15;
+    // return debouncer.calculate(!endSensor.get());
+  }
+
+  public boolean getHolding(){
+    return isHolding;
+  }
+
+  public void setHolding(boolean hold){
+    isHolding = hold;
   }
 }

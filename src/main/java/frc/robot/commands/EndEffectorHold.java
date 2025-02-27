@@ -4,7 +4,10 @@
 
 package frc.robot.commands;
 
+import java.time.chrono.IsoChronology;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.EndEffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -24,7 +27,13 @@ public class EndEffectorHold extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    ee.holdCoral();
+    // if(RobotContainer.driverController.getRightTriggerAxis() >= 0.95 && !ee.hasCoral()){
+    //   ee.coralIn();
+    // }else if(RobotContainer.driverController.getLeftTriggerAxis() >= 0.95 && !ee.hasCoral()){
+    //  ee.coralOut(); 
+    // }else if(ee.hasCoral()){
+    //   ee.holdCoral();
+    // }
   }
 
   // Called once the command ends or is interrupted.
