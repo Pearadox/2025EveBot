@@ -93,20 +93,20 @@ public class Arm extends SubsystemBase {
       return;
     }
     
-    PositionVoltage request;
+    double setpoint;
     if(armMode == ArmMode.Intake) {
-      request = new PositionVoltage(ArmConstants.ARM_INTAKE_ROT * ArmConstants.ARM_GEAR_RATIO  + armAdjust);
+      setpoint = ArmConstants.ARM_INTAKE_ROT * ArmConstants.ARM_GEAR_RATIO  + armAdjust;
     } else if(armMode == ArmMode.L2) {
-      request = new PositionVoltage(ArmConstants.ARM_LEVEL_2_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+      setpoint = ArmConstants.ARM_LEVEL_2_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust;
     } else if(armMode == ArmMode.L3) {
-      request = new PositionVoltage(ArmConstants.ARM_LEVEL_3_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+      setpoint = ArmConstants.ARM_LEVEL_3_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust;
     } else if(armMode == ArmMode.L4) {
-      request = new PositionVoltage(ArmConstants.ARM_LEVEL_4_ROT  * ArmConstants.ARM_GEAR_RATIO + armAdjust);      
+      setpoint = ArmConstants.ARM_LEVEL_4_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust;      
     } else {
-      request = new PositionVoltage(ArmConstants.ARM_STOWED_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust);
+      setpoint = ArmConstants.ARM_STOWED_ROT * ArmConstants.ARM_GEAR_RATIO + armAdjust;
     }
-
-    pivot.setControl(request);
+    pivot.setControl(new PositionVoltage(setpoint));
+    SmartDashboard.putNumber("Arm/Cur Setpoint", setpoint);
   }
 
 
@@ -137,9 +137,9 @@ public class Arm extends SubsystemBase {
     return Units.rotationsToDegrees(getPivotPosition());
   }
 
-  public void zeroArm() {
-    pivot.setPosition(ArmConstants.ARM_STOWED_ROT * ArmConstants.ARM_GEAR_RATIO);
-  }
+  // public void zeroArm() {
+  //   pivot.setPosition(ArmConstants.ARM_STOWED_ROT * ArmConstants.ARM_GEAR_RATIO);
+  // }
 
   public void armAdjust(double adjustBy) {
     armAdjust += adjustBy;

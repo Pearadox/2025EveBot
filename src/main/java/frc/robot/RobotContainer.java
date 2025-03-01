@@ -65,8 +65,9 @@ public class RobotContainer {
   private final JoystickButton armAdjustDown = new JoystickButton(driverController, XboxController.Button.kB.value);
   private final JoystickButton setPID = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
 
-  private final JoystickButton stow = new JoystickButton(opController, XboxController.Button.kX.value);
+  private final JoystickButton stow = new JoystickButton(opController, XboxController.Button.kStart.value);
   private final JoystickButton station = new JoystickButton(opController, XboxController.Button.kY.value);
+  private final JoystickButton levelTwo = new JoystickButton(opController, XboxController.Button.kX.value);
   private final JoystickButton levelThree = new JoystickButton(opController, XboxController.Button.kB.value);
   private final JoystickButton levelFour = new JoystickButton(opController, XboxController.Button.kA.value);
   private final JoystickButton intake = new JoystickButton(opController, XboxController.Button.kLeftBumper.value);
@@ -74,7 +75,7 @@ public class RobotContainer {
   // private final JoystickButton armZero = new JoystickButton(opController, XboxController.Button.kRightBumper.value);
   // private final JoystickButton armUnpower = new JoystickButton(opController, XboxController.Button.kA.value);
 
-  private final JoystickButton intakeActive = new JoystickButton(opController, XboxController.Button.kLeftBumper.value);
+  // private final JoystickButton intakeActive = new JoystickButton(opController, XboxController.Button.kLeftBumper.value);
 
   //Pose Estimation
 
@@ -111,6 +112,8 @@ public class RobotContainer {
       .andThen(new InstantCommand(() -> arm.setStowed())));
     station.onTrue(new InstantCommand(() -> elevator.setElevatorStationMode())
       .andThen(new InstantCommand(() -> arm.setArmIntake())));
+    levelTwo.onTrue(new InstantCommand(() -> elevator.setElevatorLevelTwoMode())
+      .andThen(new InstantCommand(() -> arm.setArmL2())));
     levelThree.onTrue(new InstantCommand(() -> elevator.setElevatorLevelThreeMode())
       .andThen(new InstantCommand(() -> arm.setArmL3())));
     levelFour.onTrue(new InstantCommand(() -> elevator.setElevatorLevelFourMode())

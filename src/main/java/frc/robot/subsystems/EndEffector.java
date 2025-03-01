@@ -66,9 +66,9 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void collectCoral() {
-    if(RobotContainer.driverController.getRightTriggerAxis() >= 0.9){
+    if(RobotContainer.driverController.getRightTriggerAxis() >= 0.25){
       coralIn();
-    } else if(RobotContainer.driverController.getLeftTriggerAxis() >= 0.9){
+    } else if(RobotContainer.driverController.getLeftTriggerAxis() >= 0.25){
       coralOut();
     }else{
       slowEndEffector();
@@ -76,11 +76,11 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void coralIn(){
-    endEffector.set(EndEffectorConstants.PULL_VOLTAGE * RobotContainer.driverController.getRightTriggerAxis());
+    endEffector.set(EndEffectorConstants.PULL_SPEED * RobotContainer.driverController.getRightTriggerAxis());
   }
 
   public void coralOut(){
-    endEffector.set(EndEffectorConstants.PUSH_VOLTAGE * RobotContainer.driverController.getLeftTriggerAxis());
+    endEffector.set(EndEffectorConstants.PUSH_SPEED * RobotContainer.driverController.getLeftTriggerAxis());
   }
 
   public void holdCoral(){

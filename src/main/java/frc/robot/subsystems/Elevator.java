@@ -21,6 +21,7 @@ public class Elevator extends SubsystemBase {
   private PearadoxTalonFX elevatorFollower;
   private MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0);
   private double elevatorOffset = 0.0;
+  private TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
 
   private static enum ElevatorMode { STOWED, STATION, LEVEL_TWO, LEVEL_THREE, LEVEL_FOUR; }
   private ElevatorMode elevatorMode = ElevatorMode.STOWED;
@@ -45,7 +46,6 @@ public class Elevator extends SubsystemBase {
              ElevatorConstants.CURRENT_LIMIT, 
              ElevatorConstants.IS_INVERTED);
 
-    var talonFXConfigs = new TalonFXConfiguration();
 
     var slot0Configs = talonFXConfigs.Slot0;
     slot0Configs.kG = ElevatorConstants.kG; // add enough Gravity Gain just before motor starts moving
@@ -122,10 +122,10 @@ public class Elevator extends SubsystemBase {
       elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.LEVEL_TWO_ROT + elevatorOffset));
     }
     else if(elevatorMode == ElevatorMode.LEVEL_THREE) {
-      elevator.setControl(motionMagicRequest.withPosition(10 + elevatorOffset));
+      elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.LEVEL_THREE_ROT + elevatorOffset));
     }
     else if(elevatorMode == ElevatorMode.LEVEL_FOUR) {
-      elevator.setControl(motionMagicRequest.withPosition(14 + elevatorOffset));
+      elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.LEVEL_FOUR_ROT + elevatorOffset));
     }
   }
 
@@ -170,7 +170,6 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setPID(){
-    var talonFXConfigs = new TalonFXConfiguration();
 
     var slot0Configs = talonFXConfigs.Slot0;
     slot0Configs.kG = SmartDashboard.getNumber("Elevator kG", ElevatorConstants.kG);
@@ -186,7 +185,9 @@ public class Elevator extends SubsystemBase {
     motionMagicConfigs.MotionMagicAcceleration = ElevatorConstants.MM_ACCELERATION; // Target acceleration of 160 rps/s (0.5 seconds)
     // (not sure if needed - > ) motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
+    elevator.getConfigurator().refresh(talonFXConfigs);
     elevator.getConfigurator().apply(talonFXConfigs);
+
   }
 
 
