@@ -66,9 +66,9 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void collectCoral() {
-    if(RobotContainer.driverController.getRightTriggerAxis() >= 0.25){
+    if(RobotContainer.opController.getRightTriggerAxis() >= 0.25){ 
       coralIn();
-    } else if(RobotContainer.driverController.getLeftTriggerAxis() >= 0.25){
+    } else if(RobotContainer.opController.getLeftTriggerAxis() >= 0.25){ //warning - this left trigger is being used for ground intake too - oops
       coralOut();
     }else{
       slowEndEffector();
@@ -76,11 +76,11 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void coralIn(){
-    endEffector.set(EndEffectorConstants.PULL_SPEED * RobotContainer.driverController.getRightTriggerAxis());
+    endEffector.set(EndEffectorConstants.PULL_SPEED * RobotContainer.opController.getRightTriggerAxis());
   }
 
   public void coralOut(){
-    endEffector.set(EndEffectorConstants.PUSH_SPEED * RobotContainer.driverController.getLeftTriggerAxis());
+    endEffector.set(EndEffectorConstants.PUSH_SPEED * RobotContainer.opController.getLeftTriggerAxis());
   }
 
   public void holdCoral(){

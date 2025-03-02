@@ -85,6 +85,7 @@ public final class Constants {
     public static final double TELE_DRIVE_MAX_ANGULAR_SPEED = DRIVETRAIN_MAX_ANGULAR_SPEED / 1.25;
     public static final double TELE_DRIVE_MAX_ACCELERATION = 3;
     public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION = 3;
+    public static final double ROBOT_ORIENTED_TRIGGER_OFFSET = 0.4;
 
     //Auton constraints
     public static final double AUTO_kP_TRANSLATION = 4;
@@ -109,7 +110,7 @@ public final class Constants {
   public static final class EndEffectorConstants{
     public static final int END_EFFECTOR_ID = 23;
 
-    public static final double PULL_SPEED = -0.5;
+    public static final double PULL_SPEED = -1;
     public static final double PUSH_SPEED = 0.5;
 
 
@@ -176,9 +177,10 @@ public final class Constants {
 
     //the following are in inches
     public static final double STOWED_HEIGHT = 0;
-    public static final double STATION_HEIGHT = 5; //TODO
-    public static final double LEVEL_TWO_HEIGHT = 7; // This is slightly away from the reef for clearance //TODO
-    public static final double LEVEL_THREE_HEIGHT = 21; //TODO
+    public static final double STATION_HEIGHT = 1.3; //TODO
+    public static final double LEVEL_TWO_HEIGHT = 9.1; // was 7 This is slightly away from the reef for clearance //TODO
+    public static final double LEVEL_THREE_HEIGHT = 25; //TODO was 21[]\
+
     public static final double LEVEL_FOUR_HEIGHT = 30; //TODO
 
 
@@ -218,10 +220,10 @@ public final class Constants {
 
     public static final double ARM_GEAR_RATIO = 60; // TODO?
 
-    public static final double ARM_LEVEL_4_ROT = Units.degreesToRotations(-174.7470703125);
-    public static final double ARM_LEVEL_3_ROT = Units.degreesToRotations(-74.455078125);
-    public static final double ARM_LEVEL_2_ROT = Units.degreesToRotations(-73.4208984375); // 69.65332 -88
-    public static final double ARM_INTAKE_ROT = Units.degreesToRotations(61.04589843750001);    // 40 // -24.734
+    public static final double ARM_LEVEL_4_ROT = Units.degreesToRotations(189.2529297); //-174.7470703125
+    public static final double ARM_LEVEL_3_ROT = Units.degreesToRotations(-81.19); //was -74.455078125
+    public static final double ARM_LEVEL_2_ROT = Units.degreesToRotations(-81.19); // was -74.455078125
+    public static final double ARM_INTAKE_ROT = Units.degreesToRotations(50.04589843750001);    //  was 61.....
     public static final double ARM_STOWED_ROT = Units.degreesToRotations(-88); //should be 0
 
     public static final double ARM_ADJUST_INCREMENT = 0.075;
@@ -229,7 +231,7 @@ public final class Constants {
     public static final double UPDATE_FREQ = 50;
 
     // TODO: tune pid
-    public static final double kG = 0.1;
+    public static final double kG = 0.2;
     public static final double kS = 0.0;
     public static final double kV = 0.1;
     public static final double kA = 0.0;
@@ -237,27 +239,35 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
   }
+  
+  public static final class ClimbConstants {
+    public static final int CLIMB_MOTOR_ID = 24;
+    public static final int CLIMB_MOTOR_CURRENT_LIMIT = 40;
+    public static final double CLIMB_MOTOR_VOLTAGE_COMP = 10;
+    public static final double CLIMB_VALUE = 0.7;
+  }
 
   public static final class IntakeConstants {
     // CANID for pivot
     public static final int PIVOT_ID = 40; // real CANID
 
-    public static final int PIVOT_GEAR_RATIO = 12;
+    // public static final int PIVOT_GEAR_RATIO = 60;
     
     // PID for pivot
-    public static final double PIVOT_kP = 0.25;
+    public static final double PIVOT_kP = 0.5;
     public static final double PIVOT_kI = 0.0;
     public static final double PIVOT_kD = 0.0;
     
     public static final double PIVOT_MIN_OUTPUT = -0.5;
     public static final double PIVOT_MAX_OUTPUT = 0.5;
     
-    public static final double PIVOT_GEARING = 25; // 25:1 reduction gear ratio
+    public static final double PIVOT_GEARING = 60; // 25:1 reduction gear ratio
 
-    public static final double PIVOT_OUTTAKE_ROT = Units.degreesToRotations(-10.0) * PIVOT_GEARING; // TODO: find outtake rot in motor rotations
-    public static final double PIVOT_INTAKE_ROT = Units.degreesToRotations(-90.0) * PIVOT_GEARING; // TODO: find intake rot in motor rotations
+    public static final double PIVOT_OUTTAKE_ROT = Units.degreesToRotations(10.0) * PIVOT_GEARING; // TODO: find outtake rot in motor rotations
+    public static final double PIVOT_INTAKE_ROT = Units.degreesToRotations(105.0) * PIVOT_GEARING; // TODO: find intake rot in motor rotations
     public static final double PIVOT_STOWED_ROT = Units.degreesToRotations(0.0) * PIVOT_GEARING; // TODO: find stowed rot in motor rotations
-
+    public static final double PIVOT_ALGAE_ROT = Units.degreesToRotations(40.0) * PIVOT_GEARING; // TODO: find stowed rot in motor rotations
+    
     // CAN ID for roller
     public static final int ROLLER_ID = 41;
   }

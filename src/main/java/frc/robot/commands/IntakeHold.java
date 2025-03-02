@@ -28,7 +28,7 @@ public class IntakeHold extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    groundIntake.pivotHold(RobotContainer.opController.getLeftTriggerAxis() >= .95);
+    //TODO - ADD THIS CODE groundIntake.pivotHold(RobotContainer.opController.getLeftTriggerAxis() >= .85);
   }
 
   // Called once the command ends or is interrupted.

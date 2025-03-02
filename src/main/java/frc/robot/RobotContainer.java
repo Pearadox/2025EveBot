@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.io.IOException;
+import java.lang.ModuleLayer.Controller;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -24,9 +25,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.ArmHold;
+import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.ElevatorHold;
 import frc.robot.commands.EndEffectorHold;
 import frc.robot.commands.IntakeHold;
@@ -36,6 +39,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.GroundIntake;
+import frc.robot.subsystems.ClimbSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -51,6 +55,7 @@ public class RobotContainer {
   public static final Arm arm = Arm.getInstance();
   public static final EndEffector endEffector = EndEffector.getInstance();
   public static final GroundIntake groundIntake = GroundIntake.getInstance();
+  public static final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
 
   //Driver Controls
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
@@ -64,18 +69,27 @@ public class RobotContainer {
   private final JoystickButton armAdjustUp = new JoystickButton(driverController, XboxController.Button.kX.value);
   private final JoystickButton armAdjustDown = new JoystickButton(driverController, XboxController.Button.kB.value);
   private final JoystickButton setPID = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton climberUp = new JoystickButton(driverController, XboxController.Button.kBack.value);
+  private final JoystickButton climberDown = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
 
-  private final JoystickButton stow = new JoystickButton(opController, XboxController.Button.kStart.value);
-  private final JoystickButton station = new JoystickButton(opController, XboxController.Button.kY.value);
-  private final JoystickButton levelTwo = new JoystickButton(opController, XboxController.Button.kX.value);
+  private final JoystickButton levelFour = new JoystickButton(opController, XboxController.Button.kY.value);
   private final JoystickButton levelThree = new JoystickButton(opController, XboxController.Button.kB.value);
-  private final JoystickButton levelFour = new JoystickButton(opController, XboxController.Button.kA.value);
-  private final JoystickButton intake = new JoystickButton(opController, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton levelTwo = new JoystickButton(opController, XboxController.Button.kX.value);
+  private final JoystickButton stow = new JoystickButton(opController, XboxController.Button.kA.value);
+  private final JoystickButton station = new JoystickButton(opController, XboxController.Button.kStart.value);
+  private final JoystickButton intake = new JoystickButton(opController, XboxController.Button.kBack.value);
+
+  private final JoystickButton strafeLeft = new JoystickButton(opController, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton strafeRight = new JoystickButton(opController, XboxController.Button.kRightBumper.value);
 
   // private final JoystickButton armZero = new JoystickButton(opController, XboxController.Button.kRightBumper.value);
   // private final JoystickButton armUnpower = new JoystickButton(opController, XboxController.Button.kA.value);
 
-  // private final JoystickButton intakeActive = new JoystickButton(opController, XboxController.Button.kLeftBumper.value);
+  // private final JoystickButton groundIntakeSwitch = new JoystickButton(opController, XboxController.Button.kLeftBumper.value);
+  private final POVButton groundIntakeStowed = new POVButton(opController, 0);
+  private final POVButton groundIntakeIntake = new POVButton(opController, 180);
+  private final POVButton groundIntakeOuttake = new POVButton(opController, 270);
+  private final POVButton groundIntakeAlgae = new POVButton(opController, 90);
 
   //Pose Estimation
 
@@ -120,12 +134,22 @@ public class RobotContainer {
       .andThen(new InstantCommand(() -> arm.setArmL4())));
     intake.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode())
       .andThen(new InstantCommand(() -> arm.setStowed())));
+    intake.onTrue(new InstantCommand(() -> elevator.setElevatorStationMode())
+      .andThen(new InstantCommand(() -> arm.setArmIntake())));
 
     setPID.onTrue(new InstantCommand(() -> elevator.setPID()));
 
     // armZero.onTrue(new InstantCommand(() -> arm.zeroArm()).ignoringDisable(true));
     // armUnpower.onTrue(new InstantCommand(() -> arm.setUnpowered()));
 
+    // groundIntakeSwitch.onTrue(new InstantCommand(() -> groundIntake.changePivotActivePos()));
+    groundIntakeStowed.onTrue(new InstantCommand(() -> groundIntake.setStowed()));
+    groundIntakeIntake.onTrue(new InstantCommand(() -> groundIntake.setIntake()));
+    groundIntakeOuttake.onTrue(new InstantCommand(() -> groundIntake.setOuttake()));
+    groundIntakeAlgae.onTrue(new InstantCommand(() -> groundIntake.setAlgae()));
+
+    climberUp.whileTrue(new ClimbCommand(() -> ClimbConstants.CLIMB_VALUE, () -> 0, climbSubsystem));
+    climberDown.whileTrue(new ClimbCommand(() -> 0, () -> ClimbConstants.CLIMB_VALUE, climbSubsystem));
     
   }
 
@@ -148,7 +172,11 @@ public class RobotContainer {
     elevator.setDefaultCommand(new ElevatorHold());
     arm.setDefaultCommand(new ArmHold());
     endEffector.setDefaultCommand(new EndEffectorHold());
-    // groundIntake.setDefaultCommand(new IntakeHold());
+    groundIntake.setDefaultCommand(new IntakeHold());
+    climbSubsystem.setDefaultCommand(new ClimbCommand(
+        () -> 0,
+        () -> 0,
+        climbSubsystem));
 
   }
 }

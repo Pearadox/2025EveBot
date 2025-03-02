@@ -22,11 +22,11 @@ public class GroundIntake extends SubsystemBase {
   
   private double pivotAdjust = 0.0;
   
-  public enum PivotActivePos {
-    intake, outtake
+  public enum PivotPos {
+    stowed, intake, outtake, algae
   }
 
-  public PivotActivePos pivotActivePos = PivotActivePos.intake;
+  public PivotPos pivotPos = PivotPos.stowed;
   
   private  PearadoxTalonFX roller;
 
@@ -40,7 +40,7 @@ public class GroundIntake extends SubsystemBase {
     pivot = new PearadoxTalonFX(
       IntakeConstants.PIVOT_ID,
       NeutralModeValue.Brake,
-      50,
+      30,
       false);
 
     Slot0Configs slot0configs = new Slot0Configs();
@@ -54,45 +54,56 @@ public class GroundIntake extends SubsystemBase {
     roller = new PearadoxTalonFX(
       IntakeConstants.ROLLER_ID,
       NeutralModeValue.Brake,
-      50,
+      30,
       false);
     
   }
 
+  public void setStowed() {
+    pivotPos = PivotPos.stowed;
+  }
+
   public void setIntake() {
-    pivotActivePos = PivotActivePos.intake;
+    pivotPos = PivotPos.intake;
   }
   
   public void setOuttake() {
-    pivotActivePos = PivotActivePos.outtake;
+    pivotPos = PivotPos.outtake;
+  }
+
+  public void setAlgae() {
+    pivotPos = PivotPos.algae;
   }
 
   public void changePivotActivePos() {
-    if (pivotActivePos == PivotActivePos.intake) {
-      pivotActivePos = PivotActivePos.outtake;
+    if (pivotPos == PivotPos.intake) {
+      pivotPos = PivotPos.outtake;
     }
-    else if (pivotActivePos == PivotActivePos.outtake) {
-      pivotActivePos = PivotActivePos.intake;
+    else if (pivotPos == PivotPos.outtake) {
+      pivotPos = PivotPos.intake;
     }
   }
 
-  public PivotActivePos getPivotActivePos() {
-    return pivotActivePos;
+  public PivotPos getPivotPos() {
+    return pivotPos;
   }
 
-  public void pivotHold(boolean isActivating) {
-    if (isActivating){
-      if (pivotActivePos == PivotActivePos.intake) {
-        pivot.setControl(pivotRequest.withPosition(IntakeConstants.PIVOT_INTAKE_ROT));
-        roller.set(1.0);
-      }
-      if (pivotActivePos == PivotActivePos.outtake) {
-        pivot.setControl(pivotRequest.withPosition(IntakeConstants.PIVOT_OUTTAKE_ROT));
-        roller.set(-1.0);
-      }
-    } else {
+  public void pivotHold() {
+    if (pivotPos == PivotPos.stowed) {
       pivot.setControl(pivotRequest.withPosition(IntakeConstants.PIVOT_STOWED_ROT));
+      roller.set(1.0);
+    }
+    else if (pivotPos == PivotPos.intake) {
+      pivot.setControl(pivotRequest.withPosition(IntakeConstants.PIVOT_INTAKE_ROT));
+      roller.set(-1.0);
+    }
+    else if (pivotPos == PivotPos.outtake) {
+      pivot.setControl(pivotRequest.withPosition(IntakeConstants.PIVOT_OUTTAKE_ROT));
       roller.set(0.0);
+    }
+    else if (pivotPos == PivotPos.algae) {
+      pivot.setControl(pivotRequest.withPosition(IntakeConstants.PIVOT_ALGAE_ROT));
+      roller.set(-1.0);
     }
   }
 

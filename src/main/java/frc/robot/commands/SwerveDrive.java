@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import javax.lang.model.util.ElementScanner14;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,13 +31,38 @@ public class SwerveDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      drivetrain.swerveDrive(
-        -driverController.getLeftY(), 
-        -driverController.getLeftX(), 
-        -driverController.getRightX(),
-        RobotContainer.driverController.getRightTriggerAxis() < 0.9,
-        new Translation2d(),
-        true);
+      if(driverController.getLeftTriggerAxis() > 0.1)
+      {
+        //strafe left robot oriented
+        drivetrain.swerveDrive(
+          0, 
+          -driverController.getLeftTriggerAxis() + SwerveConstants.ROBOT_ORIENTED_TRIGGER_OFFSET, 
+          -driverController.getRightX(),
+          false,
+          new Translation2d(),
+          true);
+      }
+      else if(driverController.getRightTriggerAxis() > 0.1)
+      {
+        //strafe right robot oriented
+        drivetrain.swerveDrive(
+          0, 
+          driverController.getRightTriggerAxis() - SwerveConstants.ROBOT_ORIENTED_TRIGGER_OFFSET, 
+          -driverController.getRightX(),
+          false,
+          new Translation2d(),
+          true);
+      }
+      else
+      {
+        drivetrain.swerveDrive(
+          -driverController.getLeftY(), 
+          -driverController.getLeftX(), 
+          -driverController.getRightX(),
+          true, //RobotContainer.driverController.getRightTriggerAxis() < 0.9,
+          new Translation2d(),
+          true);
+      }
   }
 
   // Called once the command ends or is interrupted.
