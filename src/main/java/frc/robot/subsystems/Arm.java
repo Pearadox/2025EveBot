@@ -36,15 +36,6 @@ public class Arm extends SubsystemBase {
   public Arm() {
     pivot = new PearadoxTalonFX(ArmConstants.ARM_KRAKEN_ID, NeutralModeValue.Brake, ArmConstants.CURRENT_LIMIT, true);
     motor41 = new PearadoxTalonFX(40, NeutralModeValue.Brake, 40, false);
-    // pivot.getPosition().setUpdateFrequency(ArmConstants.UPDATE_FREQ);
-    // pivot.getVelocity().setUpdateFrequency(ArmConstants.UPDATE_FREQ);
-
-    // // These are needed for the follower motor to work
-    // pivot.getDutyCycle().setUpdateFrequency(ArmConstants.UPDATE_FREQ);
-    // pivot.getMotorVoltage().setUpdateFrequency(ArmConstants.UPDATE_FREQ);
-    // pivot.getTorqueCurrent().setUpdateFrequency(ArmConstants.UPDATE_FREQ);
-    // pivot.getSupplyCurrent().setUpdateFrequency(ArmConstants.UPDATE_FREQ);
-    // pivot.getStatorCurrent().setUpdateFrequency(ArmConstants.UPDATE_FREQ);
 
     BaseStatusSignal.setUpdateFrequencyForAll(ArmConstants.UPDATE_FREQ, 
         pivot.getPosition(), 

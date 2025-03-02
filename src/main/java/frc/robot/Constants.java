@@ -252,6 +252,9 @@ public final class Constants {
     public static final int PIVOT_ID = 40; // real CANID
 
     // public static final int PIVOT_GEAR_RATIO = 60;
+    public static final NeutralModeValue MODE = NeutralModeValue.Brake;
+    public static final int ROLLER_CURRENT_LIMIT = 30;
+    public static final int PIVOT_CURRENT_LIMIT = 30;
     
     // PID for pivot
     public static final double PIVOT_kP = 0.5;

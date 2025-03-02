@@ -39,7 +39,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.GroundIntake;
-import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.Climber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -55,7 +55,7 @@ public class RobotContainer {
   public static final Arm arm = Arm.getInstance();
   public static final EndEffector endEffector = EndEffector.getInstance();
   public static final GroundIntake groundIntake = GroundIntake.getInstance();
-  public static final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
+  public static final Climber climbSubsystem = new Climber();
 
   //Driver Controls
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
