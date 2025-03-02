@@ -39,8 +39,8 @@ public class GroundIntake extends SubsystemBase {
   public GroundIntake() {
     pivot = new PearadoxTalonFX(
       IntakeConstants.PIVOT_ID,
-      NeutralModeValue.Brake,
-      30,
+      IntakeConstants.MODE,
+      IntakeConstants.PIVOT_CURRENT_LIMIT,
       false);
 
     Slot0Configs slot0configs = new Slot0Configs();
@@ -53,8 +53,8 @@ public class GroundIntake extends SubsystemBase {
 
     roller = new PearadoxTalonFX(
       IntakeConstants.ROLLER_ID,
-      NeutralModeValue.Brake,
-      30,
+      IntakeConstants.MODE,
+      IntakeConstants.ROLLER_CURRENT_LIMIT,
       false);
     
   }
