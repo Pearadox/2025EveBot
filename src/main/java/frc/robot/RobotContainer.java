@@ -171,7 +171,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(new SwerveDrive());
     elevator.setDefaultCommand(new ElevatorHold());
     arm.setDefaultCommand(new ArmHold());
-    endEffector.setDefaultCommand(new EndEffectorHold());
+    // endEffector.setDefaultCommand(new EndEffectorHold());
     groundIntake.setDefaultCommand(new IntakeHold());
     climbSubsystem.setDefaultCommand(new ClimbCommand(
         () -> 0,

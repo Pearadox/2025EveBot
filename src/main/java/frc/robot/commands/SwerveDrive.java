@@ -31,23 +31,23 @@ public class SwerveDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      if(driverController.getLeftTriggerAxis() > 0.1)
+      if(driverController.getLeftTriggerAxis() > 0.4)
       {
         //strafe left robot oriented
         drivetrain.swerveDrive(
           0, 
-          -driverController.getLeftTriggerAxis() + SwerveConstants.ROBOT_ORIENTED_TRIGGER_OFFSET, 
+          driverController.getLeftTriggerAxis() - SwerveConstants.ROBOT_ORIENTED_TRIGGER_OFFSET, 
           -driverController.getRightX(),
           false,
           new Translation2d(),
           true);
       }
-      else if(driverController.getRightTriggerAxis() > 0.1)
+      else if(driverController.getRightTriggerAxis() > 0.4)
       {
         //strafe right robot oriented
         drivetrain.swerveDrive(
           0, 
-          driverController.getRightTriggerAxis() - SwerveConstants.ROBOT_ORIENTED_TRIGGER_OFFSET, 
+          -driverController.getRightTriggerAxis() + SwerveConstants.ROBOT_ORIENTED_TRIGGER_OFFSET, 
           -driverController.getRightX(),
           false,
           new Translation2d(),

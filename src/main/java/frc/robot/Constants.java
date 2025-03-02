@@ -168,7 +168,7 @@ public final class Constants {
     public static final double MAX_VELOCITY_MPS = 2.0; //TODO
     public static final double MAX_ACCELERATION_MPS2 = 8.0; //TODO
     public static final double MM_CRUISE_VELCOCITY = 45; //TODO
-    public static final double MM_ACCELERATION = 20; //TODO
+    public static final double MM_ACCELERATION = 35; //TODO
 
     public static final double TICKS_PER_REV = 4000; //TODO
     public static final double GEAR_RATIO = 3; //TODO
@@ -177,11 +177,10 @@ public final class Constants {
 
     //the following are in inches
     public static final double STOWED_HEIGHT = 0;
-    public static final double STATION_HEIGHT = 1.3; //TODO
-    public static final double LEVEL_TWO_HEIGHT = 9.1; // was 7 This is slightly away from the reef for clearance //TODO
-    public static final double LEVEL_THREE_HEIGHT = 25; //TODO was 21[]\
-
-    public static final double LEVEL_FOUR_HEIGHT = 30; //TODO
+    public static final double STATION_HEIGHT = 4.6; //TODO
+    public static final double LEVEL_TWO_HEIGHT = 12; // was 7 This is slightly away from the reef for clearance //TODO
+    public static final double LEVEL_THREE_HEIGHT = 26.769; //TODO was 21
+    public static final double LEVEL_FOUR_HEIGHT = 32.718; //TODO
 
 
     public static final double MAX_ELEVATOR_HEIGHT = 20; //TODO
@@ -220,24 +219,24 @@ public final class Constants {
 
     public static final double ARM_GEAR_RATIO = 60; // TODO?
 
-    public static final double ARM_LEVEL_4_ROT = Units.degreesToRotations(189.2529297); //-174.7470703125
-    public static final double ARM_LEVEL_3_ROT = Units.degreesToRotations(-81.19); //was -74.455078125
-    public static final double ARM_LEVEL_2_ROT = Units.degreesToRotations(-81.19); // was -74.455078125
-    public static final double ARM_INTAKE_ROT = Units.degreesToRotations(50.04589843750001);    //  was 61.....
-    public static final double ARM_STOWED_ROT = Units.degreesToRotations(-88); //should be 0
+    public static final double ARM_LEVEL_4_ROT = Units.degreesToRotations(-170.94); //-180
+    public static final double ARM_LEVEL_3_ROT = Units.degreesToRotations(-79.08); //was -78
+    public static final double ARM_LEVEL_2_ROT = Units.degreesToRotations(-85); // was -74.455078125[\]
+    public static final double ARM_INTAKE_ROT = Units.degreesToRotations(-303); //  was 61
+    public static final double ARM_STOWED_ROT = Units.degreesToRotations(0); //should be 0
 
     public static final double ARM_ADJUST_INCREMENT = 0.075;
 
     public static final double UPDATE_FREQ = 50;
 
     // TODO: tune pid
-    public static final double kG = 0.2;
+    public static final double kG = 0.0; // 0.15
     public static final double kS = 0.0;
-    public static final double kV = 0.1;
+    public static final double kV = 0.0; // 0.1
     public static final double kA = 0.0;
-    public static final double kP = 0.2;
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
+    public static final double kP = 0.25; // 0.2
+    public static final double kI = 0.0; // 0.05
+    public static final double kD = 0.04;
   }
   
   public static final class ClimbConstants {
