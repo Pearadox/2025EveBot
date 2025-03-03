@@ -177,10 +177,10 @@ public final class Constants {
 
     //the following are in inches
     public static final double STOWED_HEIGHT = 0;
-    public static final double STATION_HEIGHT = 4.6; //TODO
-    public static final double LEVEL_TWO_HEIGHT = 12; // was 7 This is slightly away from the reef for clearance //TODO
-    public static final double LEVEL_THREE_HEIGHT = 26.769; //TODO was 21
-    public static final double LEVEL_FOUR_HEIGHT = 32.718; //TODO
+    public static final double STATION_HEIGHT = 4.625; //TODO
+    public static final double LEVEL_TWO_HEIGHT = 8.625; //10.9; // was 12, 7 This is slightly away from the reef for clearance //TODO
+    public static final double LEVEL_THREE_HEIGHT = 24.495; // 26.769; //TODO was 21
+    public static final double LEVEL_FOUR_HEIGHT = 29.625; // 32.718; //TODO
 
 
     public static final double MAX_ELEVATOR_HEIGHT = 20; //TODO
@@ -219,10 +219,10 @@ public final class Constants {
 
     public static final double ARM_GEAR_RATIO = 60; // TODO?
 
-    public static final double ARM_LEVEL_4_ROT = Units.degreesToRotations(-170.94); //-180
-    public static final double ARM_LEVEL_3_ROT = Units.degreesToRotations(-79.08); //was -78
-    public static final double ARM_LEVEL_2_ROT = Units.degreesToRotations(-85); // was -74.455078125[\]
-    public static final double ARM_INTAKE_ROT = Units.degreesToRotations(-303); //  was 61
+    public static final double ARM_LEVEL_4_ROT = Units.degreesToRotations(-165); //-170 //-180 //0155.94 //-161
+    public static final double ARM_LEVEL_3_ROT = Units.degreesToRotations(-69.5); //was -78 //79.08 // -66
+    public static final double ARM_LEVEL_2_ROT = Units.degreesToRotations(-66); // was -85, then -74.455078125[\] //79.08
+    public static final double ARM_INTAKE_ROT = Units.degreesToRotations(-307); //  was 61 //-299 // -311
     public static final double ARM_STOWED_ROT = Units.degreesToRotations(0); //should be 0
 
     public static final double ARM_ADJUST_INCREMENT = 0.075;

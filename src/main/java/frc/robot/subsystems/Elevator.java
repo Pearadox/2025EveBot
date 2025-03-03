@@ -113,20 +113,29 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setElevatorPosition() {
-    if(elevatorMode == ElevatorMode.STOWED) {
-      elevator.setControl(motionMagicRequest.withPosition(Math.max(lowest_rot, Math.min((ElevatorConstants.STOWED_ROT + elevatorOffset), highest_rot))));
-    }else if(elevatorMode == ElevatorMode.STATION){
-      elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.STATION_ROT + elevatorOffset));
+    double setpoint;
+    if (elevatorMode == ElevatorMode.STATION) {
+      setpoint = ElevatorConstants.STATION_ROT + elevatorOffset;
+    } else if(elevatorMode == ElevatorMode.LEVEL_TWO) {
+      setpoint = ElevatorConstants.LEVEL_TWO_ROT + elevatorOffset;
+    } else if(elevatorMode == ElevatorMode.LEVEL_THREE) {
+      setpoint = ElevatorConstants.LEVEL_THREE_ROT + elevatorOffset;
+    } else if(elevatorMode == ElevatorMode.LEVEL_FOUR) {
+      setpoint = ElevatorConstants.LEVEL_FOUR_ROT + elevatorOffset;
+    } else { // stowed
+      setpoint = Math.max(lowest_rot, Math.min((ElevatorConstants.STOWED_ROT + elevatorOffset), highest_rot));
     }
-    else if(elevatorMode == ElevatorMode.LEVEL_TWO) {
-      elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.LEVEL_TWO_ROT + elevatorOffset));
-    }
-    else if(elevatorMode == ElevatorMode.LEVEL_THREE) {
-      elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.LEVEL_THREE_ROT + elevatorOffset));
-    }
-    else if(elevatorMode == ElevatorMode.LEVEL_FOUR) {
-      elevator.setControl(motionMagicRequest.withPosition(ElevatorConstants.LEVEL_FOUR_ROT + elevatorOffset));
-    }
+
+    // switch (elevatorMode) {
+    //   case LEVEL_FOUR: setpoint = ElevatorConstants.LEVEL_FOUR_ROT + elevatorOffset; break;
+    //   case LEVEL_THREE: setpoint = ElevatorConstants.LEVEL_THREE_ROT + elevatorOffset; break;
+    //   case LEVEL_TWO: setpoint = ElevatorConstants.LEVEL_TWO_ROT + elevatorOffset; break;
+    //   case STATION: setpoint = ElevatorConstants.STATION_ROT + elevatorOffset; break;
+    //   default: setpoint = Math.max(lowest_rot, Math.min((ElevatorConstants.STOWED_ROT + elevatorOffset), highest_rot));
+    // }
+
+    elevator.setControl(motionMagicRequest.withPosition(setpoint));
+    SmartDashboard.putNumber("Elevator/Setpoint", setpoint);
   }
 
   public double getElevatorPositionRots() {
