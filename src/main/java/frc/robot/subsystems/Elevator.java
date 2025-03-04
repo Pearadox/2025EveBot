@@ -48,32 +48,22 @@ public class Elevator extends SubsystemBase {
 
 
     var slot0Configs = talonFXConfigs.Slot0;
-    slot0Configs.kG = ElevatorConstants.kG; // add enough Gravity Gain just before motor starts moving
-    slot0Configs.kS = ElevatorConstants.kS; // Add 0.1 V output to overcome static friction
-    slot0Configs.kV = ElevatorConstants.kV; // A velocity target of 1 rps results in 0.1 V output
-    slot0Configs.kA = ElevatorConstants.kA; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0Configs.kP = ElevatorConstants.kP; // A position error of 2.5 rotations results in 12 V output, prev 4.8
-    slot0Configs.kI = ElevatorConstants.kI; // no output for integrated error
-    slot0Configs.kD = ElevatorConstants.kD; // A velocity error of 1 rps results in 0.1 V output
+    slot0Configs.kG = ElevatorConstants.kG; 
+    slot0Configs.kS = ElevatorConstants.kS; 
+    slot0Configs.kV = ElevatorConstants.kV;
+    slot0Configs.kA = ElevatorConstants.kA; 
+    slot0Configs.kP = ElevatorConstants.kP; 
+    slot0Configs.kI = ElevatorConstants.kI; 
+    slot0Configs.kD = ElevatorConstants.kD; 
 
     var motionMagicConfigs = talonFXConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = ElevatorConstants.MM_CRUISE_VELCOCITY; // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration = ElevatorConstants.MM_ACCELERATION; // Target acceleration of 160 rps/s (0.5 seconds)
-    // (not sure if needed - > ) motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    motionMagicConfigs.MotionMagicCruiseVelocity = ElevatorConstants.MM_CRUISE_VELCOCITY; 
+    motionMagicConfigs.MotionMagicAcceleration = ElevatorConstants.MM_ACCELERATION; 
 
     elevator.getConfigurator().apply(talonFXConfigs);
 
-    // elevator.getPosition().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
-    // elevator.getVelocity().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
 
-    // // These are needed for the follower motor to work
-    // elevator.getDutyCycle().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
-    // elevator.getMotorVoltage().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
-    // elevator.getTorqueCurrent().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
-    // elevator.getSupplyCurrent().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
-    // elevator.getStatorCurrent().setUpdateFrequency(ElevatorConstants.UPDATE_FREQ);
-
-    BaseStatusSignal.setUpdateFrequencyForAll(ArmConstants.UPDATE_FREQ, 
+    BaseStatusSignal.setUpdateFrequencyForAll(ElevatorConstants.UPDATE_FREQ, 
         elevator.getPosition(), 
         elevator.getVelocity(),
         elevator.getDutyCycle(),
@@ -125,14 +115,6 @@ public class Elevator extends SubsystemBase {
     } else { // stowed
       setpoint = Math.max(lowest_rot, Math.min((ElevatorConstants.STOWED_ROT + elevatorOffset), highest_rot));
     }
-
-    // switch (elevatorMode) {
-    //   case LEVEL_FOUR: setpoint = ElevatorConstants.LEVEL_FOUR_ROT + elevatorOffset; break;
-    //   case LEVEL_THREE: setpoint = ElevatorConstants.LEVEL_THREE_ROT + elevatorOffset; break;
-    //   case LEVEL_TWO: setpoint = ElevatorConstants.LEVEL_TWO_ROT + elevatorOffset; break;
-    //   case STATION: setpoint = ElevatorConstants.STATION_ROT + elevatorOffset; break;
-    //   default: setpoint = Math.max(lowest_rot, Math.min((ElevatorConstants.STOWED_ROT + elevatorOffset), highest_rot));
-    // }
 
     elevator.setControl(motionMagicRequest.withPosition(setpoint));
     SmartDashboard.putNumber("Elevator/Setpoint", setpoint);

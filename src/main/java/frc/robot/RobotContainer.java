@@ -165,6 +165,7 @@ public class RobotContainer {
   public void registerNamedCommands(){
     NamedCommands.registerCommand("Stop Modules", new InstantCommand(() -> drivetrain.stopModules()));
     NamedCommands.registerCommand("Reset Heading", new InstantCommand(drivetrain::zeroHeading, drivetrain));
+    autoChooser = AutoBuilder.buildAutoChooser();
   }
 
   public void setDefaultCommands(){
