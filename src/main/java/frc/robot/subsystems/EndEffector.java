@@ -33,7 +33,8 @@ public class EndEffector extends SubsystemBase {
   private Debouncer debouncer;
 
   private boolean rumbled = false;
-  private boolean isExtended = false; //TODO: integrate with arm
+  private boolean isIntaking = false;
+  private boolean isCoral = true; //TODO: integrate with arm
   private boolean isHolding = false;
 
 
@@ -51,13 +52,15 @@ public class EndEffector extends SubsystemBase {
         endEffector.getSupplyCurrent(),
         endEffector.getStatorCurrent()
     );
+    SmartDashboard.putNumber("EE Speed", isCoral ? -0.15 : 0.1);
   }
 
   @Override
   public void periodic() {
     collectCoral();
 
-    SmartDashboard.putBoolean("End Sensor", hasCoral());
+    SmartDashboard.putBoolean("End Sensor", isHolding);
+    SmartDashboard.putBoolean("Is Intaking", isIntaking);
 
     SmartDashboard.putNumber("EE Stator Current", endEffector.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("EE Supply Current", endEffector.getSupplyCurrent().getValueAsDouble());
@@ -66,36 +69,44 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void collectCoral() {
+    hasCoral();
     if(RobotContainer.opController.getRightTriggerAxis() >= 0.25){ 
       coralIn();
     } else if(RobotContainer.opController.getLeftTriggerAxis() >= 0.25){ //warning - this left trigger is being used for ground intake too - oops
       coralOut();
+    }else if(isHolding && isCoral){
+      stop();
     }else{
-      slowEndEffector();
+      holdCoral();
     }
   }
 
   public void coralIn(){
+    isHolding = false;
     endEffector.set(EndEffectorConstants.PULL_SPEED * RobotContainer.opController.getRightTriggerAxis());
   }
 
   public void coralOut(){
+    isHolding = false;
     endEffector.set(EndEffectorConstants.PUSH_SPEED * RobotContainer.opController.getLeftTriggerAxis());
   }
 
   public void holdCoral(){
-    endEffector.set(-0.05);
+    endEffector.set(SmartDashboard.getNumber("EE Speed", isCoral ? -0.15 : 0.1));
   }
 
-  public void slowEndEffector(){
-    endEffector.set(0.1);
-  }
-  public void stopEndEffector(){
+  public void stop(){
     endEffector.set(0);
   }
 
-  public boolean hasCoral(){
-    return endEffector.getStatorCurrent().getValueAsDouble() > 15;
+  public void hasCoral(){
+    if(endEffector.getStatorCurrent().getValueAsDouble() > 45){
+      isHolding = true;
+    }else{
+      isHolding = false;
+    }
+    
+    // return endEffector.getStatorCurrent().getValueAsDouble() > 40;
     // return debouncer.calculate(!endSensor.get());
   }
 
