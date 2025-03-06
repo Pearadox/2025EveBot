@@ -113,7 +113,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setElevatorPosition() {
-    double setpoint;
+    double setpoint = ElevatorConstants.STOWED_ROT + elevatorOffset;
     if (elevatorMode == ElevatorMode.STATION) {
       setpoint = ElevatorConstants.STATION_ROT + elevatorOffset;
     } else if(elevatorMode == ElevatorMode.LEVEL_TWO) {
@@ -122,9 +122,10 @@ public class Elevator extends SubsystemBase {
       setpoint = ElevatorConstants.LEVEL_THREE_ROT + elevatorOffset;
     } else if(elevatorMode == ElevatorMode.LEVEL_FOUR) {
       setpoint = ElevatorConstants.LEVEL_FOUR_ROT + elevatorOffset;
-    } else { // stowed
-      setpoint = Math.max(lowest_rot, Math.min((ElevatorConstants.STOWED_ROT + elevatorOffset), highest_rot));
     }
+    // } else { // stowed
+    //   setpoint = Math.max(lowest_rot, Math.min((ElevatorConstants.STOWED_ROT + elevatorOffset), highest_rot));
+    // }
 
     // switch (elevatorMode) {
     //   case LEVEL_FOUR: setpoint = ElevatorConstants.LEVEL_FOUR_ROT + elevatorOffset; break;

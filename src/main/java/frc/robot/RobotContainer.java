@@ -71,7 +71,7 @@ public class RobotContainer {
   private final JoystickButton armAdjustDown = new JoystickButton(driverController, XboxController.Button.kB.value);
   private final JoystickButton setPID = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
   private final JoystickButton climberUp = new JoystickButton(driverController, XboxController.Button.kBack.value);
-  private final JoystickButton climberDown = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+  private final JoystickButton slowMode = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
 
   private final JoystickButton levelFour = new JoystickButton(opController, XboxController.Button.kY.value);
   private final JoystickButton levelThree = new JoystickButton(opController, XboxController.Button.kB.value);
@@ -150,7 +150,7 @@ public class RobotContainer {
     groundIntakeAlgae.onTrue(new InstantCommand(() -> groundIntake.setAlgae()));
 
     climberUp.whileTrue(new ClimbCommand(() -> ClimbConstants.CLIMB_VALUE, () -> 0, climbSubsystem));
-    climberDown.whileTrue(new ClimbCommand(() -> 0, () -> ClimbConstants.CLIMB_VALUE, climbSubsystem));
+    slowMode.whileTrue(new InstantCommand(() -> drivetrain.setSlow(true))).onFalse(new InstantCommand(() -> drivetrain.setSlow(false)));
     
   }
 

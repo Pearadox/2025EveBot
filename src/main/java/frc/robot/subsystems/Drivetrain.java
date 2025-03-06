@@ -57,6 +57,8 @@ public class Drivetrain extends SubsystemBase {
 
   private double exponent = 1;
 
+  public boolean isSlow = false;
+
   public static Drivetrain getInstance(){
     return DRIVETRAIN;
   }
@@ -166,9 +168,9 @@ public class Drivetrain extends SubsystemBase {
     sideSpeed = Math.pow(sideSpeed, exponent) * (exponent % 2 == 0 ? Math.signum(sideSpeed): 1);
     turnSpeed = Math.pow(turnSpeed, exponent) * (exponent % 2 == 0 ? Math.signum(turnSpeed): 1);
 
-    frontSpeed = frontLimiter.calculate(frontSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
-    sideSpeed = sideLimiter.calculate(sideSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
-    turnSpeed = turnLimiter.calculate(turnSpeed) * SwerveConstants.TELE_DRIVE_MAX_ANGULAR_SPEED;
+    frontSpeed = frontLimiter.calculate(frontSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED / (isSlow ? 8 : 1);
+    sideSpeed = sideLimiter.calculate(sideSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED / (isSlow ? 8 : 1);
+    turnSpeed = turnLimiter.calculate(turnSpeed) * SwerveConstants.TELE_DRIVE_MAX_ANGULAR_SPEED / (isSlow ? 8 : 1);
 
     ChassisSpeeds chassisSpeeds;
     if(fieldOriented){
@@ -293,6 +295,10 @@ public class Drivetrain extends SubsystemBase {
         return alliance.get() == DriverStation.Alliance.Red;
     }
     return false;
+  }
+
+  public void setSlow(boolean flag){
+    isSlow = flag;
   }
 
 
