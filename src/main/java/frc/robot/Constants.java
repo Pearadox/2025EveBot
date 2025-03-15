@@ -12,7 +12,7 @@ public class Constants {
 
     public static class VisionConstants {
         public static final String LL_NAME = "limelight-back";
-        public static final String LL_B_NAME = "limelight-coral-station"; // TODO: limelight names & offsets
+        public static final String LL_B_NAME = "limelight-station"; // TODO: limelight names & offsets
 
         public static final Vector<N3> LIMELIGHT_STD_DEV = VecBuilder.fill(.7, .7, .9999999);
         public static final Vector<N3> MEGATAG2_LIMELIGHT_STD_DEV = VecBuilder.fill(.7, .7, .9999999);
@@ -65,7 +65,7 @@ public class Constants {
         public static final double REEF_ALIGN_MID_TX = 0;
         public static final double REEF_ALIGN_RIGHT_TX = -20;
 
-        public static final double REEF_ALIGN_TY = -15;
+        public static final double REEF_ALIGN_TY = -8;
 
         public static final double REEF_kP = 0.02; // Tune all PID values
         public static final double REEF_kI = 0;

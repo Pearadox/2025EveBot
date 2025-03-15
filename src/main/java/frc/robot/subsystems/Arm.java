@@ -192,8 +192,8 @@ public class Arm extends SubsystemBase {
         }
 
         // pivot.setControl(motionMagicRequest.withPosition(setpoint));
-        pivot.setControl(new PositionVoltage(-setpoint)
-                .withFeedForward(0.35 * Math.cos(-1 * Units.degreesToRadians(getArmAngleDegrees() - 96))));
+        pivot.setControl(new PositionVoltage(-setpoint));
+        // .withFeedForward(0.35 * Math.cos(-1 * Units.degreesToRadians(getArmAngleDegrees() - 96))));
         // pivot.setControl(new PositionVoltage(-setpoint).withFeedForward(ArmConstants.kG *
         // Math.cos(getArmAngleDegrees() - 96)));
         SmarterDashboard.putNumber("Arm/Cur Setpoint", -setpoint);

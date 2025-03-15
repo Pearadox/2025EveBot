@@ -22,15 +22,20 @@ public class AutoAlign {
 
     private PIDController reefStrafeSpeedController =
             new PIDController(AlignConstants.REEF_kP, AlignConstants.REEF_kI, AlignConstants.REEF_kD);
+    private PIDController reefForwardSpeedController =
+            new PIDController(AlignConstants.REEF_kP, AlignConstants.REEF_kI, AlignConstants.REEF_kD);
     private PIDController reefRotationSpeedController =
             new PIDController(AlignConstants.ROT_REEF_kP, AlignConstants.ROT_REEF_kI, AlignConstants.ROT_REEF_kD);
 
     private double alignSpeedStrafe = 0;
+    private double alignSpeedRotation = 0;
+    private double alignSpeedForward = 0;
     private int currentReefAlignTagID = 18; // -1
     private Map<Integer, Pose3d> tagPoses3d = getTagPoses();
 
     public AutoAlign(Supplier<Pose2d> poseSupplier) {
         this.poseSupplier = poseSupplier;
+        reefRotationSpeedController.enableContinuousInput(-180, 180);
     }
 
     public Map<Integer, Pose3d> getTagPoses() {
@@ -114,20 +119,38 @@ public class AutoAlign {
         return alignSpeedStrafe;
     }
 
-    // public double getAlignRotationSpeedPercent(double angle) {
-    //     Rotation2d robotAngle = poseSupplier.get().getRotation();
-    //     Rotation2d tagAngle = getTagAngle(currentReefAlignTagID);
-    //     Rotation2d rotationError = robotAngle.minus(tagAngle);
+    public double getAlignRotationSpeedPercent(Rotation2d targetAngle2d) {
+        double robotAngle = poseSupplier.get().getRotation().getDegrees();
+        double targetAngle = targetAngle2d.getDegrees();
+        double rotationError = robotAngle - targetAngle;
 
-    //     boolean isValid = llIsValid();
-    //     if(isValid) {
+        alignSpeedRotation = reefRotationSpeedController.calculate(robotAngle, targetAngle);
 
-    //     }
-    //     else {
+        Logger.recordOutput("Align/Rotation Speed", alignSpeedRotation);
+        Logger.recordOutput("Align/Robot Angle", robotAngle);
+        Logger.recordOutput("Align/Rotation Error", rotationError);
 
-    //     }
-    //     return 0;
-    // }
+        return alignSpeedRotation;
+    }
+
+    public double getAlignForwardSpeedPercent(double setPoint) {
+        double ty = LimelightHelpers.getTY(VisionConstants.LL_NAME);
+        double tyError = ty - setPoint;
+
+        if (llIsValid()) {
+            alignSpeedForward = reefForwardSpeedController.calculate(ty, setPoint);
+        } else {
+            // reduce the current align speed by 1/4 each tick
+            // this prevents it from suddenly stopping and starting when it loses sight of the tag
+            alignSpeedForward *= AlignConstants.ALIGN_DAMPING_FACTOR;
+        }
+
+        Logger.recordOutput("Align/Forward Speed", alignSpeedForward);
+        Logger.recordOutput("Align/ty", ty);
+        Logger.recordOutput("Align/ty Error", tyError);
+
+        return alignSpeedForward;
+    }
 
     private boolean llIsValid() {
         boolean valid = LimelightHelpers.getTargetCount(VisionConstants.LL_NAME) == 1
@@ -137,12 +160,12 @@ public class AutoAlign {
     }
 
     public ChassisSpeeds getFieldRelativeChassisSpeeds(
-            double tx, double ySpeed, Rotation2d gyroAngle, double maxSpeed) {
+            double tx, double ySpeed, Rotation2d gyroAngle, double maxSpeed, double maxAngularSpeed) {
         Logger.recordOutput("Align/Timestamp", System.currentTimeMillis());
         return ChassisSpeeds.fromRobotRelativeSpeeds(
-                getAlignStrafeSpeedPercent(tx) * maxSpeed,
+                getAlignStrafeSpeedPercent(tx) * maxSpeed, // getAlignStrafeSpeedPercent(tx) * maxSpeed
                 ySpeed,
-                0,
-                gyroAngle); // getAlignStrafeSpeedPercent(tx) * maxSpeed
+                getAlignRotationSpeedPercent(getAlignAngleReef()) * maxAngularSpeed,
+                gyroAngle);
     }
 }
