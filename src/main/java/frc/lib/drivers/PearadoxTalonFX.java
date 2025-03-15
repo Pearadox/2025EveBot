@@ -11,33 +11,35 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 /** Add your docs here. */
-public class PearadoxTalonFX extends TalonFX{
+public class PearadoxTalonFX extends TalonFX {
     /**
      * Creates a new TalonFX with the necessary configurations.
+     *
      * @param deviceId The device ID.
      * @param mode The neutral mode (Brake/Coast).
      * @param limit The current limit.
      * @param isInverted The invert type of the motor.
      */
-    public PearadoxTalonFX(int deviceId, NeutralModeValue mode, int limit, boolean isInverted){
+    public PearadoxTalonFX(int deviceId, NeutralModeValue mode, int limit, boolean isInverted) {
         this(deviceId, mode, limit, limit, isInverted);
     }
-    
+
     /**
      * Creates a new TalonFX with the necessary configurations.
+     *
      * @param deviceId The device ID.
      * @param mode The neutral mode (Brake/Coast).
      * @param stator The stator current limit.
      * @param supply The supply current limit.
      * @param isInverted The invert type of the motor.
      */
-    public PearadoxTalonFX(int deviceId, NeutralModeValue mode, int supply, int stator, boolean isInverted){
+    public PearadoxTalonFX(int deviceId, NeutralModeValue mode, int supply, int stator, boolean isInverted) {
         super(deviceId);
         TalonFXConfiguration config = new TalonFXConfiguration();
 
         config.MotorOutput.NeutralMode = mode;
-        config.MotorOutput.Inverted = isInverted 
-            ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+        config.MotorOutput.Inverted =
+                isInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
         config.CurrentLimits.StatorCurrentLimit = supply;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.CurrentLimits.SupplyCurrentLimit = stator;
@@ -51,14 +53,14 @@ public class PearadoxTalonFX extends TalonFX{
     public void setCurrentLimit(double limit) {
         setCurrentLimits(limit, limit);
     }
-    
+
     public void setCurrentLimits(double supply, double stator) {
         CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
         currentLimitsConfigs.withSupplyCurrentLimitEnable(true);
         currentLimitsConfigs.withSupplyCurrentLimit(supply);
         currentLimitsConfigs.withStatorCurrentLimitEnable(true);
         currentLimitsConfigs.withStatorCurrentLimit(stator);
-    
+
         this.getConfigurator().apply(currentLimitsConfigs);
     }
 }

@@ -4,29 +4,54 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ClimbConstants;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-
+import org.littletonrobotics.junction.Logger;
 
 /** Class to run the rollers over CAN */
 public class Climber extends SubsystemBase {
-  //private final SparkMax climbMotor;
-  private final PearadoxTalonFX climbMotor; 
+    // private final SparkMax climbMotor;
+    private final PearadoxTalonFX climbMotor;
 
-  public Climber() {
+    public Climber() {
 
-    climbMotor = new PearadoxTalonFX(ClimbConstants.CLIMB_MOTOR_ID, NeutralModeValue.Brake, 50, false);
-        
-  }
+        climbMotor = new PearadoxTalonFX(ClimbConstants.CLIMB_MOTOR_ID, NeutralModeValue.Brake, 50, false);
 
-  @Override
-  public void periodic() {
-  }
+        BaseStatusSignal.setUpdateFrequencyForAll(
+                ArmConstants.UPDATE_FREQ,
+                climbMotor.getPosition(),
+                climbMotor.getMotorVoltage(),
+                climbMotor.getTorqueCurrent(),
+                climbMotor.getSupplyCurrent(),
+                climbMotor.getStatorCurrent());
 
-  /** This is a method that makes the roller spin */
-  public void runClimb(double forward, double reverse) {
-    climbMotor.set(forward - reverse);
-  }
+        climbMotor.optimizeBusUtilization();
+    }
+
+    @Override
+    public void periodic() {
+        Logger.recordOutput("Climber/Pos", climbMotor.getPosition().getValueAsDouble());
+        Logger.recordOutput("Climber/Volts", climbMotor.getMotorVoltage().getValueAsDouble());
+        Logger.recordOutput(
+                "Climber/Supply Current", climbMotor.getSupplyCurrent().getValueAsDouble());
+        Logger.recordOutput(
+                "Climber/Supply Current", climbMotor.getStatorCurrent().getValueAsDouble());
+        //     if(RobotContainer.opController.getLeftTriggerAxis() >= 0.9){
+        //         runClimb(ClimbConstants.CLIMB_VALUE, 0);
+        //     }else if(RobotContainer.opController.getRightTriggerAxis() >= 0.9){
+        //         runClimb(-ClimbConstants.CLIMB_VALUE, 0);
+        //     }else{
+        //         runClimb(0, 0);
+        //     }
+    }
+
+    /** This is a method that makes the roller spin */
+    public void runClimb(double forward, double reverse) {
+        Logger.recordOutput("Climber/Percent Speed", forward - reverse);
+        climbMotor.set(forward - reverse);
+    }
 }
