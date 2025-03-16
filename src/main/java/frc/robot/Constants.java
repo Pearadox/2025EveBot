@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
@@ -77,6 +78,9 @@ public class Constants {
         public static final double ROT_REEF_kP = 0.02; // Tune all PID values
         public static final double ROT_REEF_kI = 0;
         public static final double ROT_REEF_kD = 0;
+
+        public static final PathConstraints PATH_CONSTRAINTS =
+                new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
     }
 
     public static final class ElevatorConstants {

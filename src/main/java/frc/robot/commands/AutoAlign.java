@@ -1,10 +1,14 @@
 package frc.robot.commands;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.AlignConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisionConstants;
@@ -12,6 +16,7 @@ import frc.robot.RobotContainer;
 import frc.robot.util.vision.LimelightHelpers;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -31,6 +36,7 @@ public class AutoAlign {
     private double alignSpeedRotation = 0;
     private double alignSpeedForward = 0;
     private int currentReefAlignTagID = 18; // -1
+    private int currentCSAlignTagID = 0; // -1
     private Map<Integer, Pose3d> tagPoses3d = getTagPoses();
 
     public AutoAlign(Supplier<Pose2d> poseSupplier) {
@@ -44,6 +50,12 @@ public class AutoAlign {
             tagPoses.put(tag, VisionConstants.aprilTagLayout.getTagPose(tag).get());
         }
         for (int tag : FieldConstants.BLUE_REEF_TAG_IDS) {
+            tagPoses.put(tag, VisionConstants.aprilTagLayout.getTagPose(tag).get());
+        }
+        for (int tag : FieldConstants.RED_CORAL_STATION_TAG_IDS) {
+            tagPoses.put(tag, VisionConstants.aprilTagLayout.getTagPose(tag).get());
+        }
+        for (int tag : FieldConstants.BLUE_CORAL_STATION_TAG_IDS) {
             tagPoses.put(tag, VisionConstants.aprilTagLayout.getTagPose(tag).get());
         }
         return tagPoses;
@@ -221,5 +233,22 @@ public class AutoAlign {
                 ySpeed,
                 getAlignRotationSpeedPercent(getAlignAngleReef()) * maxAngularSpeed,
                 gyroAngle);
+    }
+
+    public Command getCSPathCommand(BooleanSupplier isProcessorSide) {
+        try {
+            if (isProcessorSide.getAsBoolean()) { // 2 & 12, processor side
+                PathPlannerPath alignCSP = PathPlannerPath.fromPathFile("Align_CS_P");
+                // Since AutoBuilder is configured, we can use it to build pathfinding commands
+                return AutoBuilder.pathfindThenFollowPath(alignCSP, AlignConstants.PATH_CONSTRAINTS);
+            } else {
+                PathPlannerPath alignCSNP = PathPlannerPath.fromPathFile("Align_CS_NP");
+                // Since AutoBuilder is configured, we can use it to build pathfinding commands
+                return AutoBuilder.pathfindThenFollowPath(alignCSNP, AlignConstants.PATH_CONSTRAINTS);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Commands.print("align csp not found");
+        }
     }
 }

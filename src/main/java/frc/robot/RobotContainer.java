@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -17,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.AlignConstants;
@@ -106,16 +106,18 @@ public class RobotContainer {
     public static final PoseEstimation poseEstimation = new PoseEstimation();
 
     public RobotContainer() {
+        align = new AutoAlign(() -> drivetrain.getState().Pose);
+
         setDefaultCommands();
         registerNamedCommands();
         autoChooser = AutoBuilder.buildAutoChooser("GH_L4");
         SmartDashboard.putData("Auto Mode", autoChooser);
         configureBindings();
 
-        align = new AutoAlign(() -> drivetrain.getState().Pose);
         // alignLeftBranch = getReefAlignCommand(AlignConstants.REEF_ALIGN_LEFT_TX);
         // alignRightBranch = getReefAlignCommand(AlignConstants.REEF_ALIGN_RIGHT_TX);
         // alignMid = getReefAlignCommand(AlignConstants.REEF_ALIGN_MID_TX);
+        PathfindingCommand.warmupCommand().schedule();
     }
 
     private void configureBindings() {
@@ -179,19 +181,20 @@ public class RobotContainer {
 
         resetHeading_Start.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        stow_A.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode())
-                .andThen(new InstantCommand(() -> arm.setStowed())));
-        station_Start.onTrue(new InstantCommand(() -> elevator.setElevatorStationMode())
-                .andThen(new WaitCommand(0.5))
-                .andThen(new InstantCommand(() -> arm.setArmIntake())));
-        levelTwo_X.onTrue(new InstantCommand(() -> elevator.setElevatorLevelTwoMode())
-                .andThen(new InstantCommand(() -> arm.setArmL2())));
-        levelThree_B.onTrue(new InstantCommand(() -> elevator.setElevatorLevelThreeMode())
-                .andThen(new InstantCommand(() -> arm.setArmL3())));
-        levelFour_Y.onTrue(new InstantCommand(() -> elevator.setElevatorLevelFourMode())
-                .andThen(new InstantCommand(() -> arm.setArmL4())));
-        barge_Back.onTrue(new InstantCommand(() -> elevator.setElevatorBarge())
-                .andThen(new InstantCommand(() -> arm.setBarge())));
+        stow_A.whileTrue(align.getCSPathCommand(() -> drivetrain.getState().Pose.getMeasureY().in(Meters) < 4.0259));
+        // stow_A.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode())
+        //         .andThen(new InstantCommand(() -> arm.setStowed())));
+        // station_Start.onTrue(new InstantCommand(() -> elevator.setElevatorStationMode())
+        //         .andThen(new WaitCommand(0.5))
+        //         .andThen(new InstantCommand(() -> arm.setArmIntake())));
+        // levelTwo_X.onTrue(new InstantCommand(() -> elevator.setElevatorLevelTwoMode())
+        //         .andThen(new InstantCommand(() -> arm.setArmL2())));
+        // levelThree_B.onTrue(new InstantCommand(() -> elevator.setElevatorLevelThreeMode())
+        //         .andThen(new InstantCommand(() -> arm.setArmL3())));
+        // levelFour_Y.onTrue(new InstantCommand(() -> elevator.setElevatorLevelFourMode())
+        //         .andThen(new InstantCommand(() -> arm.setArmL4())));
+        // barge_Back.onTrue(new InstantCommand(() -> elevator.setElevatorBarge())
+        //         .andThen(new InstantCommand(() -> arm.setBarge())));
 
         resetAdjusts_RB.onTrue(
                 new InstantCommand(() -> elevator.resetAdjust()).andThen(new InstantCommand(() -> arm.resetAdjust())));
