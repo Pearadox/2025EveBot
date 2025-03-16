@@ -60,18 +60,19 @@ public class Constants {
         public static final double ALIGN_DAMPING_FACTOR = 0.75;
         public static final double ALIGN_SPEED_DEADBAND = 0.025;
 
-        // TODO: find left & right branch tx & ty
-        public static final double REEF_ALIGN_LEFT_TX = 20;
-        public static final double REEF_ALIGN_MID_TX = 0;
-        public static final double REEF_ALIGN_RIGHT_TX = -20;
+        public static final double BRANCH_SPACING = Units.inchesToMeters(12.94 / 2.0);
 
-        public static final double REEF_ALIGN_TY = -8;
+        // target relative
+        public static final double REEF_ALIGN_MID_TX = 0.28575;
+        public static final double REEF_ALIGN_LEFT_TX = -BRANCH_SPACING + REEF_ALIGN_MID_TX;
+        public static final double REEF_ALIGN_RIGHT_TX = BRANCH_SPACING + REEF_ALIGN_MID_TX;
+        public static final double REEF_ALIGN_TZ = -0; // target relative
 
-        public static final double REEF_kP = 0.3; // Tune all PID values
+        public static final double REEF_kP = 0.5; // Tune all PID values
         public static final double REEF_kI = 0;
         public static final double REEF_kD = 0;
 
-        public static final double REEF_Forward_kP = 0.3; // Tune all PID values
+        public static final double REEF_Forward_kP = 0.2; // Tune all PID values
 
         public static final double ROT_REEF_kP = 0.02; // Tune all PID values
         public static final double ROT_REEF_kI = 0;

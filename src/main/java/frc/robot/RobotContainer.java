@@ -143,7 +143,7 @@ public class RobotContainer {
 
         alignPovDown.whileTrue(drivetrain.applyRequest(
                 () -> robotOrientedDrive
-                        .withVelocityX(align.getAlignForwardSpeedPercent2(0)
+                        .withVelocityX(align.getAlignForwardSpeedPercent2(AlignConstants.REEF_ALIGN_TZ)
                                 * MaxSpeed) // Drive forward with negative Y (forward)
                         .withVelocityY(align.getAlignStrafeSpeedPercent2(AlignConstants.REEF_ALIGN_MID_TX)
                                 * MaxSpeed) // Drive left with negative X (left)
@@ -153,15 +153,15 @@ public class RobotContainer {
 
         alignPovLeft.whileTrue(drivetrain.applyRequest(
                 () -> robotOrientedDrive
-                        .withVelocityX(align.getAlignForwardSpeedPercent(AlignConstants.REEF_ALIGN_TY) * MaxSpeed)
-                        .withVelocityY(align.getAlignStrafeSpeedPercent(AlignConstants.REEF_ALIGN_LEFT_TX) * MaxSpeed)
+                        .withVelocityX(align.getAlignForwardSpeedPercent2(AlignConstants.REEF_ALIGN_TZ) * MaxSpeed)
+                        .withVelocityY(align.getAlignStrafeSpeedPercent2(AlignConstants.REEF_ALIGN_LEFT_TX) * MaxSpeed)
                         .withRotationalRate(align.getAlignRotationSpeedPercent(align.getAlignAngleReef())
                                 * MaxAngularRate) // Drive counterclockwise with negative X (left)
                 ));
 
         alignPovRight.whileTrue(drivetrain.applyRequest(() -> robotOrientedDrive
-                .withVelocityX(align.getAlignForwardSpeedPercent(AlignConstants.REEF_ALIGN_TY) * MaxSpeed)
-                .withVelocityY(align.getAlignStrafeSpeedPercent(AlignConstants.REEF_ALIGN_RIGHT_TX) * MaxSpeed)
+                .withVelocityX(align.getAlignForwardSpeedPercent2(AlignConstants.REEF_ALIGN_TZ) * MaxSpeed)
+                .withVelocityY(align.getAlignStrafeSpeedPercent2(AlignConstants.REEF_ALIGN_RIGHT_TX) * MaxSpeed)
                 .withRotationalRate(align.getAlignRotationSpeedPercent(align.getAlignAngleReef()) * MaxAngularRate)));
 
         // strafeTriggers.whileTrue(
