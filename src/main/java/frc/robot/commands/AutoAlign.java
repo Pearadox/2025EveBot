@@ -23,7 +23,7 @@ public class AutoAlign {
     private PIDController reefStrafeSpeedController =
             new PIDController(AlignConstants.REEF_kP, AlignConstants.REEF_kI, AlignConstants.REEF_kD);
     private PIDController reefForwardSpeedController =
-            new PIDController(AlignConstants.REEF_kP, AlignConstants.REEF_kI, AlignConstants.REEF_kD);
+            new PIDController(AlignConstants.REEF_Forward_kP, AlignConstants.REEF_kI, AlignConstants.REEF_kD);
     private PIDController reefRotationSpeedController =
             new PIDController(AlignConstants.ROT_REEF_kP, AlignConstants.ROT_REEF_kI, AlignConstants.ROT_REEF_kD);
 
@@ -153,7 +153,8 @@ public class AutoAlign {
     }
 
     private boolean llIsValid() {
-        boolean valid = LimelightHelpers.getTargetCount(VisionConstants.LL_NAME) == 1
+        LimelightHelpers.setPriorityTagID(VisionConstants.LL_NAME, currentReefAlignTagID);
+        boolean valid = LimelightHelpers.getTargetCount(VisionConstants.LL_NAME) >= 1
                 && LimelightHelpers.getFiducialID(VisionConstants.LL_NAME) == currentReefAlignTagID;
         Logger.recordOutput("Align/Valid", valid);
         return valid;

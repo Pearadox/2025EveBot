@@ -51,7 +51,7 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.RobotCentric robotOrientedDrive = new SwerveRequest.RobotCentric()
             .withDeadband(MaxSpeed * 0.05)
-            .withRotationalDeadband(MaxAngularRate * 0.01) // Add a 10% deadband
+            .withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.FieldCentricFacingAngle pointTowards = new SwerveRequest.FieldCentricFacingAngle()
             .withDeadband(MaxSpeed * 0.1)
@@ -66,6 +66,7 @@ public class RobotContainer {
     public static final XboxController driverController = new XboxController(0);
     public static final XboxController opController = new XboxController(1);
 
+    // driver controls
     private final JoystickButton resetHeading_Start =
             new JoystickButton(driverController, XboxController.Button.kStart.value);
     private final POVButton alignPovLeft = new POVButton(driverController, 270);
@@ -75,7 +76,9 @@ public class RobotContainer {
             new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
     private final JoystickButton robotOrientated_RB =
             new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    private final POVButton driveForwardPovUp = new POVButton(driverController, 0);
 
+    // operator controls
     private final JoystickButton levelFour_Y = new JoystickButton(opController, XboxController.Button.kY.value);
     private final JoystickButton levelThree_B = new JoystickButton(opController, XboxController.Button.kB.value);
     private final JoystickButton levelTwo_X = new JoystickButton(opController, XboxController.Button.kX.value);
@@ -126,6 +129,13 @@ public class RobotContainer {
                                 * MaxAngularRate) // Drive counterclockwise with negative X (left)
                 ));
 
+        driveForwardPovUp.onTrue(drivetrain
+                .applyRequest(() -> robotOrientedDrive
+                        .withVelocityX(-MaxSpeed / 2)
+                        .withVelocityY(0)
+                        .withRotationalRate(0))
+                .withTimeout(0.2));
+
         zeroElevator_LB
                 .whileTrue(new InstantCommand(() -> elevator.setZeroing(true)))
                 .onFalse(new InstantCommand(() -> elevator.zeroElevator())
@@ -143,46 +153,16 @@ public class RobotContainer {
 
         alignPovLeft.whileTrue(drivetrain.applyRequest(
                 () -> robotOrientedDrive
-                        .withVelocityX(align.getAlignForwardSpeedPercent(AlignConstants.REEF_ALIGN_TY)
-                                * MaxSpeed) // Drive forward with negative Y (forward)
-                        .withVelocityY(align.getAlignStrafeSpeedPercent(AlignConstants.REEF_ALIGN_LEFT_TX)
-                                * MaxSpeed) // Drive left with negative X (left)
+                        .withVelocityX(align.getAlignForwardSpeedPercent(AlignConstants.REEF_ALIGN_TY) * MaxSpeed)
+                        .withVelocityY(align.getAlignStrafeSpeedPercent(AlignConstants.REEF_ALIGN_LEFT_TX) * MaxSpeed)
                         .withRotationalRate(align.getAlignRotationSpeedPercent(align.getAlignAngleReef())
                                 * MaxAngularRate) // Drive counterclockwise with negative X (left)
                 ));
 
-        alignPovRight.whileTrue(drivetrain.applyRequest(
-                () -> robotOrientedDrive
-                        .withVelocityX(align.getAlignForwardSpeedPercent(AlignConstants.REEF_ALIGN_TY)
-                                * MaxSpeed) // Drive forward with negative Y (forward)
-                        .withVelocityY(align.getAlignStrafeSpeedPercent(AlignConstants.REEF_ALIGN_RIGHT_TX)
-                                * MaxSpeed) // Drive left with negative X (left)
-                        .withRotationalRate(align.getAlignRotationSpeedPercent(align.getAlignAngleReef())
-                                * MaxAngularRate) // Drive counterclockwise with negative X (left)
-                ));
-
-        // alignPovDown.whileTrue(drivetrain.applyRequest(() -> fieldCentricDrive
-        //         .withVelocityX(align.getFieldRelativeChassisSpeeds(
-        //                         AlignConstants.REEF_ALIGN_MID_TX,
-        //                         driverController.getLeftY() * MaxSpeed,
-        //                         drivetrain.getState().Pose.getRotation(),
-        //                         MaxSpeed,
-        //                         MaxAngularRate)
-        //                 .vyMetersPerSecond)
-        //         .withVelocityY(align.getFieldRelativeChassisSpeeds(
-        //                         AlignConstants.REEF_ALIGN_MID_TX,
-        //                         driverController.getLeftY() * MaxSpeed,
-        //                         drivetrain.getState().Pose.getRotation(),
-        //                         MaxSpeed,
-        //                         MaxAngularRate)
-        //                 .vxMetersPerSecond)
-        //         .withRotationalRate(align.getFieldRelativeChassisSpeeds(
-        //                         AlignConstants.REEF_ALIGN_MID_TX,
-        //                         driverController.getLeftY() * MaxSpeed,
-        //                         drivetrain.getState().Pose.getRotation(),
-        //                         MaxSpeed,
-        //                         MaxAngularRate)
-        //                 .omegaRadiansPerSecond)));
+        alignPovRight.whileTrue(drivetrain.applyRequest(() -> robotOrientedDrive
+                .withVelocityX(align.getAlignForwardSpeedPercent(AlignConstants.REEF_ALIGN_TY) * MaxSpeed)
+                .withVelocityY(align.getAlignStrafeSpeedPercent(AlignConstants.REEF_ALIGN_RIGHT_TX) * MaxSpeed)
+                .withRotationalRate(align.getAlignRotationSpeedPercent(align.getAlignAngleReef()) * MaxAngularRate)));
 
         // strafeTriggers.whileTrue(
         //     drivetrain.applyRequest(

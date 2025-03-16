@@ -67,9 +67,11 @@ public class Constants {
 
         public static final double REEF_ALIGN_TY = -8;
 
-        public static final double REEF_kP = 0.02; // Tune all PID values
+        public static final double REEF_kP = 0.01; // Tune all PID values
         public static final double REEF_kI = 0;
         public static final double REEF_kD = 0;
+
+        public static final double REEF_Forward_kP = 0.08; // Tune all PID values
 
         public static final double ROT_REEF_kP = 0.02; // Tune all PID values
         public static final double ROT_REEF_kI = 0;

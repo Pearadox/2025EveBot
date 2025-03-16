@@ -21,6 +21,7 @@ public class PoseEstimation {
 
     private final LimelightBackend[] backends;
     private final boolean[] backendToggles;
+    private final int[] validIds = {1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21, 22}; // not 4,5,14,15
 
     private final TimeInterpolatableBuffer<Pose2d> poseHistory = TimeInterpolatableBuffer.createBuffer(2);
 
@@ -45,6 +46,7 @@ public class PoseEstimation {
         // backends[1] = new LimelightBackend(VisionConstants.LL_B_NAME, true);
         backendToggles[0] = true;
         // backendToggles[1] = true;
+        LimelightHelpers.SetFiducialIDFiltersOverride(VisionConstants.LL_NAME, validIds);
     }
 
     public void periodic(double angularSpeed) {
