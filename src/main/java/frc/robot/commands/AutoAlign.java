@@ -119,6 +119,38 @@ public class AutoAlign {
         return alignSpeedStrafe;
     }
 
+    public double getAlignStrafeSpeedPercent2(double setPoint) {
+        // 3D transform of the robot in the coordinate system of the primary in-view AprilTag
+        // (array (6)) [tx, ty, tz, pitch, yaw, roll] (meters, degrees)
+        double[] targetRelativeRobotPose = LimelightHelpers.getBotPose_TargetSpace(VisionConstants.LL_NAME);
+        double tx = targetRelativeRobotPose[0];
+        double txError = tx - setPoint;
+
+        // // if the drivetrain isn't yet rotationally aligned, this affects the tx
+        // boolean withinRotRolerance = Math.abs(getAlignAngleReef()
+        //                 .minus(poseSupplier.get().getRotation())
+        //                 .getDegrees())
+        //         < AlignConstants.ALIGN_ROT_TOLERANCE_DEGREES;
+        // Logger.recordOutput("Align/IsWithinRotTolerance", withinRotRolerance);
+
+        boolean isValid = llIsValid(); // && withinRotRolerance;
+        if (isValid) {
+            // multiply error by kP to get the speed
+            alignSpeedStrafe = reefStrafeSpeedController.calculate(tx, setPoint);
+            alignSpeedStrafe += AlignConstants.ALIGN_KS * Math.signum(alignSpeedStrafe);
+        } else {
+            // reduce the current align speed by 1/4 each tick
+            // this prevents it from suddenly stopping and starting when it loses sight of the tag
+            alignSpeedStrafe *= AlignConstants.ALIGN_DAMPING_FACTOR;
+        }
+
+        Logger.recordOutput("Align/Strafe Speed", alignSpeedStrafe);
+        Logger.recordOutput("Align/tx", tx);
+        Logger.recordOutput("Align/tx Error", txError);
+
+        return alignSpeedStrafe;
+    }
+
     public double getAlignRotationSpeedPercent(Rotation2d targetAngle2d) {
         double robotAngle = poseSupplier.get().getRotation().getDegrees();
         double targetAngle = targetAngle2d.getDegrees();
@@ -148,6 +180,27 @@ public class AutoAlign {
         Logger.recordOutput("Align/Forward Speed", alignSpeedForward);
         Logger.recordOutput("Align/ty", ty);
         Logger.recordOutput("Align/ty Error", tyError);
+
+        return alignSpeedForward;
+    }
+
+    public double getAlignForwardSpeedPercent2(double setPoint) {
+
+        double[] targetRelativeRobotPose = LimelightHelpers.getBotPose_TargetSpace(VisionConstants.LL_NAME);
+        double tz = targetRelativeRobotPose[2];
+        double tzError = tz - setPoint;
+
+        if (llIsValid()) {
+            alignSpeedForward = -reefForwardSpeedController.calculate(tz, setPoint);
+        } else {
+            // reduce the current align speed by 1/4 each tick
+            // this prevents it from suddenly stopping and starting when it loses sight of the tag
+            alignSpeedForward *= AlignConstants.ALIGN_DAMPING_FACTOR;
+        }
+
+        Logger.recordOutput("Align/Forward Speed", alignSpeedForward);
+        Logger.recordOutput("Align/ty", tz);
+        Logger.recordOutput("Align/ty Error", tzError);
 
         return alignSpeedForward;
     }

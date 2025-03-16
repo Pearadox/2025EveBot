@@ -143,9 +143,9 @@ public class RobotContainer {
 
         alignPovDown.whileTrue(drivetrain.applyRequest(
                 () -> robotOrientedDrive
-                        .withVelocityX(align.getAlignForwardSpeedPercent(AlignConstants.REEF_ALIGN_TY)
+                        .withVelocityX(align.getAlignForwardSpeedPercent2(0)
                                 * MaxSpeed) // Drive forward with negative Y (forward)
-                        .withVelocityY(align.getAlignStrafeSpeedPercent(AlignConstants.REEF_ALIGN_MID_TX)
+                        .withVelocityY(align.getAlignStrafeSpeedPercent2(AlignConstants.REEF_ALIGN_MID_TX)
                                 * MaxSpeed) // Drive left with negative X (left)
                         .withRotationalRate(align.getAlignRotationSpeedPercent(align.getAlignAngleReef())
                                 * MaxAngularRate) // Drive counterclockwise with negative X (left)
