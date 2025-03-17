@@ -64,7 +64,7 @@ public class Constants {
         public static final double BRANCH_SPACING = Units.inchesToMeters(12.94 / 2.0);
 
         // target relative
-        public static final double REEF_ALIGN_MID_TX = 0.28575;
+        public static final double REEF_ALIGN_MID_TX = 0; // 0.28575
         public static final double REEF_ALIGN_LEFT_TX = -BRANCH_SPACING + REEF_ALIGN_MID_TX;
         public static final double REEF_ALIGN_RIGHT_TX = BRANCH_SPACING + REEF_ALIGN_MID_TX;
         public static final double REEF_ALIGN_TZ = -0; // target relative

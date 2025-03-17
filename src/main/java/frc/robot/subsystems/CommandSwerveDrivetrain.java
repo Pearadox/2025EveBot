@@ -14,7 +14,9 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -24,8 +26,15 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.util.SmarterDashboard;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements Subsystem so it can easily be used in
@@ -257,6 +266,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+
+        Logger.recordOutput(
+                "Drivetrain/IsProcessor", getState().Pose.getMeasureY().in(Meters) < 4.0259);
+
+        getClosestStationTag();
+        getClosestReefTag();
+        Logger.recordOutput("Drivetrain/Closest Station Tag", currentCSAlignTagID);
+        Logger.recordOutput("Drivetrain/Closest Reef Tag", currentReefAlignTagID);
+
+        Transform2d offset = getState().Pose.minus(getTagPose(currentReefAlignTagID));
+        SmarterDashboard.putNumber("Align/Offset X", offset.getX());
+        SmarterDashboard.putNumber("Align/Offset Y", offset.getY());
     }
 
     private void startSimThread() {
@@ -307,5 +328,88 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public void changeRobotOrientation() {
         isFieldOriented = !isFieldOriented;
+    }
+
+    public boolean isProcessorSide() {
+        return getState().Pose.getMeasureY().in(Meters) < 4.0259;
+    }
+
+    public int currentCSAlignTagID = 0; // -1
+    public int currentReefAlignTagID = 18; // -1
+
+    private Map<Integer, Pose3d> tagPoses3d = getTagPoses();
+
+    public Map<Integer, Pose3d> getTagPoses() {
+        Map<Integer, Pose3d> tagPoses = new HashMap<Integer, Pose3d>();
+        for (int tag : FieldConstants.RED_REEF_TAG_IDS) {
+            tagPoses.put(tag, VisionConstants.aprilTagLayout.getTagPose(tag).get());
+        }
+        for (int tag : FieldConstants.BLUE_REEF_TAG_IDS) {
+            tagPoses.put(tag, VisionConstants.aprilTagLayout.getTagPose(tag).get());
+        }
+        for (int tag : FieldConstants.RED_CORAL_STATION_TAG_IDS) {
+            tagPoses.put(tag, VisionConstants.aprilTagLayout.getTagPose(tag).get());
+        }
+        for (int tag : FieldConstants.BLUE_CORAL_STATION_TAG_IDS) {
+            tagPoses.put(tag, VisionConstants.aprilTagLayout.getTagPose(tag).get());
+        }
+        return tagPoses;
+    }
+
+    public int getClosestStationTag() {
+        currentCSAlignTagID = getClosestAprilTag(
+                RobotContainer.isRedAlliance()
+                        ? FieldConstants.RED_CORAL_STATION_TAG_IDS
+                        : FieldConstants.BLUE_CORAL_STATION_TAG_IDS,
+                getState().Pose);
+
+        return currentCSAlignTagID;
+    }
+
+    private Pose2d getTagPose(int tagID) {
+
+        if (tagPoses3d.containsKey(tagID)) {
+            Pose3d tagPose = tagPoses3d.get(tagID);
+            return tagPose.toPose2d();
+        } else return new Pose2d();
+    }
+
+    public void getClosestReefTag() {
+        currentReefAlignTagID = getClosestAprilTag(
+                RobotContainer.isRedAlliance() ? FieldConstants.RED_REEF_TAG_IDS : FieldConstants.BLUE_REEF_TAG_IDS,
+                getState().Pose);
+    }
+
+    private Rotation2d getTagAngle(int tagID) {
+
+        if (tagPoses3d.containsKey(tagID)) {
+            Pose3d tagPose = tagPoses3d.get(tagID);
+            return new Rotation2d(tagPose.getRotation().getZ());
+        } else return new Rotation2d(0);
+    }
+
+    private int getClosestAprilTag(int[] tagIDs, Pose2d robotPose) {
+        double minDistance = Double.POSITIVE_INFINITY;
+        int closestTagID = -1;
+
+        // iterates through all tag IDs
+        for (int i : tagIDs) {
+            if (tagPoses3d.containsKey(i)) {
+                Pose3d tagPose = tagPoses3d.get(i);
+
+                // distance between robot pose and april tag
+                double distance = tagPose.getTranslation()
+                        .toTranslation2d()
+                        .minus(robotPose.getTranslation())
+                        .getNorm();
+
+                if (distance < minDistance) {
+                    closestTagID = i;
+                    minDistance = distance;
+                }
+            }
+        }
+
+        return closestTagID;
     }
 }

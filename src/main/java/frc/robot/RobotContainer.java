@@ -145,11 +145,11 @@ public class RobotContainer {
 
         alignPovDown.whileTrue(drivetrain.applyRequest(
                 () -> robotOrientedDrive
-                        .withVelocityX(align.getAlignForwardSpeedPercent2(AlignConstants.REEF_ALIGN_TZ)
-                                * MaxSpeed) // Drive forward with negative Y (forward)
-                        .withVelocityY(align.getAlignStrafeSpeedPercent2(AlignConstants.REEF_ALIGN_MID_TX)
+                        .withVelocityX(-align.getAlignForwardSpeedPercent2(AlignConstants.REEF_ALIGN_TZ)
+                                * MaxSpeed) // Drive fo rward with negative Y (forward)
+                        .withVelocityY(-align.getAlignStrafeSpeedPercent2(AlignConstants.REEF_ALIGN_MID_TX)
                                 * MaxSpeed) // Drive left with negative X (left)
-                        .withRotationalRate(align.getAlignRotationSpeedPercent(align.getAlignAngleReef())
+                        .withRotationalRate(align.getAlignRotationSpeedPercent(align.getAlignAngleAlgaeReef())
                                 * MaxAngularRate) // Drive counterclockwise with negative X (left)
                 ));
 
@@ -181,10 +181,13 @@ public class RobotContainer {
 
         resetHeading_Start.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        stow_A.whileTrue(align.getCSPathCommand(() -> drivetrain.getState().Pose.getMeasureY().in(Meters) < 4.0259));
+        stow_A.whileTrue(drivetrain.isProcessorSide() ? align.getCSPathCommand() : align.getCSNPCommand());
+        levelThree_B.whileTrue(align.getCSNPCommand());
+
         // stow_A.onTrue(new InstantCommand(() -> elevator.setElevatorStowedMode())
         //         .andThen(new InstantCommand(() -> arm.setStowed())));
-        // station_Start.onTrue(new InstantCommand(() -> elevator.setElevatorStationMode())
+        // station_Start.onTrue(new InstantCommand(() -> elevator.setEl]\evatorStationMode())[]\
+
         //         .andThen(new WaitCommand(0.5))
         //         .andThen(new InstantCommand(() -> arm.setArmIntake())));
         // levelTwo_X.onTrue(new InstantCommand(() -> elevator.setElevatorLevelTwoMode())

@@ -6,7 +6,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.AlignConstants;
@@ -16,7 +18,6 @@ import frc.robot.RobotContainer;
 import frc.robot.util.vision.LimelightHelpers;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -69,12 +70,37 @@ public class AutoAlign {
         } else return new Rotation2d(0);
     }
 
+    private Pose2d getTagPose(int tagID) {
+
+        if (tagPoses3d.containsKey(tagID)) {
+            Pose3d tagPose = tagPoses3d.get(tagID);
+            return tagPose.toPose2d();
+        } else return new Pose2d();
+    }
+
     public Rotation2d getAlignAngleReef() {
         currentReefAlignTagID = getClosestAprilTag(
                 RobotContainer.isRedAlliance() ? FieldConstants.RED_REEF_TAG_IDS : FieldConstants.BLUE_REEF_TAG_IDS,
                 poseSupplier.get());
 
         return getTagAngle(currentReefAlignTagID);
+    }
+
+    public Rotation2d getAlignAngleAlgaeReef() {
+        currentReefAlignTagID = getClosestAprilTag(
+                RobotContainer.isRedAlliance() ? FieldConstants.RED_REEF_TAG_IDS : FieldConstants.BLUE_REEF_TAG_IDS,
+                poseSupplier.get());
+
+        return new Rotation2d(getTagAngle(currentReefAlignTagID).getRadians() + Units.degreesToRadians(180));
+    }
+
+    public void getClosestStationTag() {
+        currentCSAlignTagID = getClosestAprilTag(
+                RobotContainer.isRedAlliance()
+                        ? FieldConstants.RED_CORAL_STATION_TAG_IDS
+                        : FieldConstants.BLUE_CORAL_STATION_TAG_IDS,
+                poseSupplier.get());
+        Logger.recordOutput("Drive/Station Tag", currentCSAlignTagID);
     }
 
     private int getClosestAprilTag(int[] tagIDs, Pose2d robotPose) {
@@ -134,9 +160,11 @@ public class AutoAlign {
     public double getAlignStrafeSpeedPercent2(double setPoint) {
         // 3D transform of the robot in the coordinate system of the primary in-view AprilTag
         // (array (6)) [tx, ty, tz, pitch, yaw, roll] (meters, degrees)
-        double[] targetRelativeRobotPose = LimelightHelpers.getBotPose_TargetSpace(VisionConstants.LL_NAME);
-        double tx = targetRelativeRobotPose[0];
-        double txError = tx - setPoint;
+        // double[] targetRelativeRobotPose = LimelightHelpers.getBotPose_TargetSpace(VisionConstants.LL_NAME);
+        // double tx = targetRelativeRobotPose[0];
+        // double txError = tx - setPoint;
+
+        Transform2d offset = poseSupplier.get().minus(getTagPose(currentReefAlignTagID));
 
         // // if the drivetrain isn't yet rotationally aligned, this affects the tx
         // boolean withinRotRolerance = Math.abs(getAlignAngleReef()
@@ -146,9 +174,9 @@ public class AutoAlign {
         // Logger.recordOutput("Align/IsWithinRotTolerance", withinRotRolerance);
 
         boolean isValid = llIsValid(); // && withinRotRolerance;
-        if (isValid) {
+        if (true) {
             // multiply error by kP to get the speed
-            alignSpeedStrafe = reefStrafeSpeedController.calculate(tx, setPoint);
+            alignSpeedStrafe = reefStrafeSpeedController.calculate(offset.getY(), setPoint);
             alignSpeedStrafe += AlignConstants.ALIGN_KS * Math.signum(alignSpeedStrafe);
         } else {
             // reduce the current align speed by 1/4 each tick
@@ -157,8 +185,8 @@ public class AutoAlign {
         }
 
         Logger.recordOutput("Align/Strafe Speed", alignSpeedStrafe);
-        Logger.recordOutput("Align/tx", tx);
-        Logger.recordOutput("Align/tx Error", txError);
+        // Logger.recordOutput("Align/tx", tx);
+        // Logger.recordOutput("Align/tx Error", txError);
 
         return alignSpeedStrafe;
     }
@@ -198,12 +226,14 @@ public class AutoAlign {
 
     public double getAlignForwardSpeedPercent2(double setPoint) {
 
-        double[] targetRelativeRobotPose = LimelightHelpers.getBotPose_TargetSpace(VisionConstants.LL_NAME);
-        double tz = targetRelativeRobotPose[2];
-        double tzError = tz - setPoint;
+        // double[] targetRelativeRobotPose = LimelightHelpers.getBotPose_TargetSpace(VisionConstants.LL_NAME);
+        // double tz = targetRelativeRobotPose[2];
+        // double tzError = tz - setPoint;
 
-        if (llIsValid()) {
-            alignSpeedForward = -reefForwardSpeedController.calculate(tz, setPoint);
+        Transform2d offset = poseSupplier.get().minus(getTagPose(currentReefAlignTagID));
+
+        if (true) {
+            alignSpeedForward = reefForwardSpeedController.calculate(offset.getX(), setPoint);
         } else {
             // reduce the current align speed by 1/4 each tick
             // this prevents it from suddenly stopping and starting when it loses sight of the tag
@@ -211,8 +241,8 @@ public class AutoAlign {
         }
 
         Logger.recordOutput("Align/Forward Speed", alignSpeedForward);
-        Logger.recordOutput("Align/ty", tz);
-        Logger.recordOutput("Align/ty Error", tzError);
+        // Logger.recordOutput("Align/ty", tz);
+        // Logger.recordOutput("Align/ty Error", tzError);
 
         return alignSpeedForward;
     }
@@ -235,17 +265,23 @@ public class AutoAlign {
                 gyroAngle);
     }
 
-    public Command getCSPathCommand(BooleanSupplier isProcessorSide) {
+    public Command getCSPathCommand() {
         try {
-            if (isProcessorSide.getAsBoolean()) { // 2 & 12, processor side
-                PathPlannerPath alignCSP = PathPlannerPath.fromPathFile("Align_CS_P");
-                // Since AutoBuilder is configured, we can use it to build pathfinding commands
-                return AutoBuilder.pathfindThenFollowPath(alignCSP, AlignConstants.PATH_CONSTRAINTS);
-            } else {
-                PathPlannerPath alignCSNP = PathPlannerPath.fromPathFile("Align_CS_NP");
-                // Since AutoBuilder is configured, we can use it to build pathfinding commands
-                return AutoBuilder.pathfindThenFollowPath(alignCSNP, AlignConstants.PATH_CONSTRAINTS);
-            }
+            PathPlannerPath alignCSP = PathPlannerPath.fromPathFile("Align_CS_P");
+            // Since AutoBuilder is configured, we can use it to build pathfinding commands
+            return AutoBuilder.pathfindThenFollowPath(alignCSP, AlignConstants.PATH_CONSTRAINTS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Commands.print("align csp not found");
+        }
+    }
+
+    public Command getCSNPCommand() {
+        try {
+            PathPlannerPath alignCSNP = PathPlannerPath.fromPathFile("Align_CS_NP");
+            // Since AutoBuilder is configured, we can use it to build pathfinding commands
+            return AutoBuilder.pathfindThenFollowPath(alignCSNP, AlignConstants.PATH_CONSTRAINTS);
+
         } catch (Exception e) {
             e.printStackTrace();
             return Commands.print("align csp not found");
