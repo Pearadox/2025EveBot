@@ -91,7 +91,6 @@ public class Climber extends SubsystemBase {
         arm.setStowed();
         // climbMotor.set(-0.7);
         climbMotor.setControl(new PositionVoltage(-230)); // -130
-
     }
 
     public void zeroClimber() {
